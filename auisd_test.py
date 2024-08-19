@@ -196,6 +196,15 @@ with st.container():
 
         # 画像の保存先ディレクトリのパスを定義
         st.session_state['save_dir'] = save_dir
+    
+    elif os_type == 'Linux':  # Linuxの場合
+
+        # ホームディレクトリを取得
+        home_dir = os.path.expanduser('~')
+        save_dir = os.path.join(home_dir, 'auisd', 'temp')
+
+        # 画像の保存先ディレクトリのパスを定義
+        st.session_state['save_dir'] = save_dir
         
     else:
         raise Exception("Unsupported OS")
