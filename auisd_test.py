@@ -639,7 +639,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 #st.success("Images refined with Adetailer successfully")
 
                 # OSに応じたディレクトリを設定
-                "if os_type == 'Windows':
+                #if os_type == 'Windows':
 
                     # 画像の保存先ディレクトリのパスを定義
                 #    save_dir_comp = 'C:/auisd/outputs'
