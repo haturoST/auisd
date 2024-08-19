@@ -177,41 +177,43 @@ with st.container():
     st.markdown("<br>", unsafe_allow_html=True)
 
     # OSの種類を取得
-    os_type = platform.system()
+    #os_type = platform.system()
 
     # OSに応じたディレクトリを設定
-    if os_type == 'Windows':
+    #if os_type == 'Windows':
 
         # 画像の保存先ディレクトリのパスを定義
-        save_dir = 'C:/auisd/temp'
-        st.session_state['save_dir'] = save_dir
+    #    save_dir = 'C:/auisd/temp'
+    #    st.session_state['save_dir'] = save_dir
 
-    elif os_type == 'Darwin':  # MacOSの場合
+    #elif os_type == 'Darwin':  # MacOSの場合
 
         #save_dir = '/Users/your_username/auisd/outputs'
 
         # ホームディレクトリを取得
-        home_dir = os.path.expanduser('~') 
-        save_dir = os.path.join(home_dir, 'auisd', 'temp')
+    #    home_dir = os.path.expanduser('~') 
+    #    save_dir = os.path.join(home_dir, 'auisd', 'temp')
 
         # 画像の保存先ディレクトリのパスを定義
-        st.session_state['save_dir'] = save_dir
+    #    st.session_state['save_dir'] = save_dir
     
-    elif os_type == 'Linux':  # Linuxの場合
+    #elif os_type == 'Linux':  # Linuxの場合
 
         # ホームディレクトリを取得
-        home_dir = os.path.expanduser('~')
-        save_dir = os.path.join(home_dir, 'auisd', 'temp')
+    #    home_dir = os.path.expanduser('~')
+    #    save_dir = os.path.join(home_dir, 'auisd', 'temp')
 
         # 画像の保存先ディレクトリのパスを定義
-        st.session_state['save_dir'] = save_dir
+    #    st.session_state['save_dir'] = save_dir
         
-    else:
-        raise Exception("Unsupported OS")
+    #else:
+    #    raise Exception("Unsupported OS")
 
     # ディレクトリが存在しない場合は作成
-    os.makedirs(save_dir, exist_ok=True)
+    #os.makedirs(save_dir, exist_ok=True)
 
+    save_dir = '/tmp'
+    st.session_state['save_dir'] = save_dir
 
 # 画像生成ボタン
     if st.button("画像を生成"):
@@ -637,29 +639,29 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 #st.success("Images refined with Adetailer successfully")
 
                 # OSに応じたディレクトリを設定
-                if os_type == 'Windows':
+                "if os_type == 'Windows':
 
                     # 画像の保存先ディレクトリのパスを定義
-                    save_dir_comp = 'C:/auisd/outputs'
+                #    save_dir_comp = 'C:/auisd/outputs'
                     #st.session_state['save_dir'] = save_dir_comp
 
-                elif os_type == 'Darwin':  # MacOSの場合
+                #elif os_type == 'Darwin':  # MacOSの場合
 
                     # ホームディレクトリを取得
-                    home_dir = os.path.expanduser('~') 
-                    save_dir_comp = os.path.join(home_dir, 'auisd', 'outputs')
+                #    home_dir = os.path.expanduser('~') 
+                #    save_dir_comp = os.path.join(home_dir, 'auisd', 'outputs')
 
-                elif os_type == 'Linux':  # Linuxの場合
+                #elif os_type == 'Linux':  # Linuxの場合
 
                     # ホームディレクトリを取得
-                    home_dir = os.path.expanduser('~')
-                    save_dir = os.path.join(home_dir, 'auisd', 'temp')
+                #    home_dir = os.path.expanduser('~')
+                #    save_dir = os.path.join(home_dir, 'auisd', 'temp')
 
                     # 画像の保存先ディレクトリのパスを定義
-                    st.session_state['save_dir'] = save_dir
+                #    st.session_state['save_dir'] = save_dir
                     
-                else:
-                    raise Exception("Unsupported OS")
+                #else:
+                #    raise Exception("Unsupported OS")
 
 
                 # 生成された画像を取得
@@ -669,19 +671,20 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 # 現在の日付を取得し、ディレクトリ名を作成
                 today = datetime.date.today()
                 date_folder_name = today.strftime('%Y-%m-%d')  # YYYY-MM-DD format
-                save_dir_date = os.path.join(save_dir_comp, date_folder_name)
+                
+                save_dir_outputs = '/tmp/outputs' #os.path.join(save_dir_comp, date_folder_name)
 
                 # ディレクトリが存在しない場合は作成
-                os.makedirs(save_dir_date, exist_ok=True)
+                os.makedirs(save_dir_outputs, exist_ok=True)
 
-                file_count = sum(os.path.isfile(os.path.join(save_dir_date, name)) for name in os.listdir(save_dir_date))
+                file_count = sum(os.path.isfile(os.path.join(save_dir_outputs, name)) for name in os.listdir(save_dir_outputs))
                 
                 #st.success(f"{save_dir_date} 内にあるファイル数は、{file_count} 個")
 
                 renban = f"{file_count + 1 - 1:0{seq_digit}}"
 
                 ad_image_name = renban + '-compimg.png'
-                ad_full_path = os.path.join(save_dir_date, ad_image_name)
+                ad_full_path = os.path.join(save_dir_outputs, ad_image_name)
 
                 #st.success(ad_image_name)
 
