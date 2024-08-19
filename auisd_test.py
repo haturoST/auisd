@@ -270,13 +270,13 @@ with st.container():
             
         cloth_image = []
         with open(img1_path, 'rb') as f:
-            img_data = f.read()
+            img_data_cloth = f.read()
             cloth_file = base64.b64encode(f.read()).decode('utf-8')
             cloth_image = [f"data:image/png;base64,{cloth_file}"]
-        
+       
         mask_image = []
         with open(img2_path, 'rb') as f:
-            img_data = f.read()
+            img_data_body = f.read()
             mask_file = base64.b64encode(f.read()).decode('utf-8')
             mask_image = [f"data:image/png;base64,{mask_file}"]
 
