@@ -648,6 +648,15 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     # ホームディレクトリを取得
                     home_dir = os.path.expanduser('~') 
                     save_dir_comp = os.path.join(home_dir, 'auisd', 'outputs')
+
+                elif os_type == 'Linux':  # Linuxの場合
+
+                    # ホームディレクトリを取得
+                    home_dir = os.path.expanduser('~')
+                    save_dir = os.path.join(home_dir, 'auisd', 'temp')
+
+                    # 画像の保存先ディレクトリのパスを定義
+                    st.session_state['save_dir'] = save_dir
                     
                 else:
                     raise Exception("Unsupported OS")
