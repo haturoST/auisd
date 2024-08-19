@@ -59,7 +59,7 @@ footer = """
         }
     </style>
     <div class="footer">
-        <p style="font-size: 12px;">©2023 Habanero Groove AI art Studio All rights reserved</p>
+        <p style="font-size: 12px;">©2024 Habanero Groove AI art Studio All rights reserved</p>
     </div>
 """
 ##############################################################
