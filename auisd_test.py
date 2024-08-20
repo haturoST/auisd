@@ -43,6 +43,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# フィッターを追加
 footer = """
     <style>
         .footer {
@@ -62,14 +63,19 @@ footer = """
         <p style="font-size: 12px;">©2024 Habanero Groove AI art Studio All rights reserved</p>
     </div>
 """
+
 ##############################################################
 #   StreamlitでUIを作成
 ##############################################################
+
 st.title('Aui for SD AUTOMATIC1111')
 st.markdown("<br>", unsafe_allow_html=True)
 st.write('Google Colabで起動したAUTOMATIC1111でAIモデル化画像を2枚生成します。\n\r(1)img2img - Inpaint Upload　>　(2)img2img - Upscale　>　(3)img2img - Adetailer(Skip img2img)')
 
 st.markdown("<br>", unsafe_allow_html=True)
+
+
+##### URL入力エリア #####
 
 # リクエスト先URLを入力するテキストボックス
 st.markdown('<p style="font-size:18px;color:#00ffff;">手順1：Stable Diffusion WebUIのURLを入力してください。</P>', unsafe_allow_html=True)
@@ -81,6 +87,9 @@ st.session_state['api_url'] = api_url
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown('<p style="font-size:18px;color:#00ffff;">手順2：衣装画像、マスク画像、マネキン画像を選択してください。</P>', unsafe_allow_html=True)
 st.markdown('<div style="color:#ff0000;font-size:14px;line-height:0;">※衣装画像とマスク画像は、幅と高さが同じ画像を使用して下さい。</div><br><br>', unsafe_allow_html=True)
+
+
+##### 画像選択エリア #####
 
 # 3つのカラムを作成
 col1, col2, col3 = st.columns([1, 1, 1])
@@ -373,7 +382,8 @@ with st.container():
 
                 # 生成された画像を取得
                 result = response.json()
-                generated_images = result['images']  # ここで正しく変数を定義
+                # 生成した標準画像変数を定義
+                generated_images = result['images']
 
                 # 画像の保存処理
                 image_name = f"output{i}.png"
@@ -383,7 +393,7 @@ with st.container():
                     with open(full_path, 'wb') as f:
                         f.write(base64.b64decode(generated_images[0]))
                 except Exception as e:
-                    st.error(f"Failed to save image: {e}")  
+                    st.error(f"画像の保存に失敗しました。: {e}")  
 
                 #print(f"Images saved: {image_name}")
                 
@@ -508,7 +518,8 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
             if upscale_response.status_code == 200:
                 
                 # 生成された画像を取得
-                hires_result = upscale_response.json() #['images']
+                hires_result = upscale_response.json()
+                # 生成した高解像度化画像変数を定義
                 hires_generated_images = hires_result['images']
 
                 save_dir = st.session_state['save_dir']
@@ -666,23 +677,28 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
                 # 生成された画像を取得
                 ad_result = adetailer_response.json() #['images']
+                # 生成した完成画像変数を定義
                 last_generated_images = ad_result['images']
 
                 # 現在の日付を取得し、ディレクトリ名を作成
-                today = datetime.date.today()
-                date_folder_name = today.strftime('%Y-%m-%d')  # YYYY-MM-DD format
+                #today = datetime.date.today()
+                # YYYY-MM-DD format
+                #date_folder_name = today.strftime('%Y-%m-%d')
                 
-                save_dir_outputs = '/tmp/outputs' #os.path.join(save_dir_comp, date_folder_name)
+                # 完成画像の保存パス
+                save_dir_outputs = '/tmp/outputs'
 
                 # ディレクトリが存在しない場合は作成
                 os.makedirs(save_dir_outputs, exist_ok=True)
 
+                # '/tmp/outputs内のファイル数をカウント
                 file_count = sum(os.path.isfile(os.path.join(save_dir_outputs, name)) for name in os.listdir(save_dir_outputs))
                 
                 #st.success(f"{save_dir_date} 内にあるファイル数は、{file_count} 個")
 
                 renban = f"{file_count + 1 - 1:0{seq_digit}}"
 
+                # 完成画像のファイル名
                 ad_image_name = renban + '-compimg.png'
                 ad_full_path = os.path.join(save_dir_outputs, ad_image_name)
 
@@ -692,7 +708,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     with open(ad_full_path, 'wb') as f:
                         f.write(base64.b64decode(last_generated_images[0]))
                 except Exception as e:
-                    st.error(f"Failed to save image: {e}")
+                    st.error(f"画像の保存に失敗しました。: {e}")
 
                 # 画像を表示
                 st.image(ad_full_path, caption=ad_image_name, use_column_width=True)
