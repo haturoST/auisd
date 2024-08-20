@@ -26,11 +26,6 @@ st.markdown(
         font-size: 16px;
         color: #333;
     }
-    .custom-header {
-        font-size: 15px;
-        color: #ffffff;
-        font-weight: bold;
-    }
         .file-uploader-label {
         font-size: 8px;
         font-weight: bold;
@@ -95,7 +90,6 @@ col1, col2, col3 = st.columns([1, 1, 1])
 # 各カラムに画像アップロードとプレビューのウィジェットを追加
 with col1:
     #st.header("画像 1")
-    #st.markdown('<div class="custom-header">衣装画像</div>', unsafe_allow_html=True)
     uploaded_file1 = st.file_uploader("衣装画像", type=["jpg", "jpeg", "png"], key="1")
 
     if uploaded_file1 is not None:
@@ -123,7 +117,6 @@ with col2:
         height1 = st.session_state['height1']
 
     #st.header("画像 2")
-    #st.markdown('<div class="custom-header">マスク画像</div>', unsafe_allow_html=True)
     uploaded_file2 = st.file_uploader("マスク画像", type=["jpg", "jpeg", "png"], key="2")
     
     if uploaded_file2 is not None:
@@ -163,7 +156,6 @@ with col2:
 
 with col3:
     #st.header("画像 3")
-    #st.markdown('<div class="custom-header">マネキン画像</div>', unsafe_allow_html=True)
     uploaded_file3 = st.file_uploader("マネキン画像", type=["jpg", "jpeg", "png"], key="3")
 
     if uploaded_file3 is not None:
