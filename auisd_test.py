@@ -171,18 +171,17 @@ with col3:
             img3 = Image.open(uploaded_file3)
             st.session_state['image3'] = img3
 
-#ith st.container():
+with st.container():
 
-st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
 
-save_dir = '/tmp'
-st.session_state['save_dir'] = save_dir
+    save_dir = '/tmp'
+    st.session_state['save_dir'] = save_dir
 
-# 画像生成ボタン
-with button:
-    st.button("画像を生成")
+    # 画像生成ボタン
+    if st.button("画像を生成"):
 
-    if img1 and img2 and img3 is not None:
+        if img1 and img2 and img3 is not None:
 
             # 画像データを取得
             img1_data = uploaded_file1.getvalue()
