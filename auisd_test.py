@@ -179,34 +179,34 @@ with st.container():
     st.session_state['save_dir'] = save_dir
 
     # 画像生成ボタン
-    if st.button("画像を生成"):
+    st.button("画像を生成")
 
-        if img1 and img2 and img3 is not None:
+    if img1 and img2 and img3 is not None:
 
-            # 画像データを取得
-            img1_data = uploaded_file1.getvalue()
-            img2_data = uploaded_file2.getvalue()
-            img3_data = uploaded_file3.getvalue()
+        # 画像データを取得
+        img1_data = uploaded_file1.getvalue()
+        img2_data = uploaded_file2.getvalue()
+        img3_data = uploaded_file3.getvalue()
 
-            # ファイル拡張子を取得
-            img1_ext = mimetypes.guess_extension(uploaded_file1.type)
-            img2_ext = mimetypes.guess_extension(uploaded_file2.type)
-            img3_ext = mimetypes.guess_extension(uploaded_file3.type)
+        # ファイル拡張子を取得
+        img1_ext = mimetypes.guess_extension(uploaded_file1.type)
+        img2_ext = mimetypes.guess_extension(uploaded_file2.type)
+        img3_ext = mimetypes.guess_extension(uploaded_file3.type)
 
-            # 保存先のパスとファイル名
-            img1_path = f"{save_dir}/cloth{img1_ext}"
-            img2_path = f"{save_dir}/mask{img2_ext}"
-            img3_path = f"{save_dir}/body{img3_ext}"
+        # 保存先のパスとファイル名
+        img1_path = f"{save_dir}/cloth{img1_ext}"
+        img2_path = f"{save_dir}/mask{img2_ext}"
+        img3_path = f"{save_dir}/body{img3_ext}"
 
-            # 保存
-            with open(img1_path, "wb") as f:
-                f.write(img1_data)
+        # 保存
+        with open(img1_path, "wb") as f:
+            f.write(img1_data)
 
-            with open(img2_path, "wb") as f:
-                f.write(img2_data)
+        with open(img2_path, "wb") as f:
+            f.write(img2_data)
 
-            with open(img3_path, "wb") as f:
-                f.write(img3_data)
+        with open(img3_path, "wb") as f:
+            f.write(img3_data)
 
 
 ###################################################################
