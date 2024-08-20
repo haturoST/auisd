@@ -68,7 +68,7 @@ st.write('Google Colabで起動したAUTOMATIC1111でAIモデル化画像を2枚
 st.markdown("<br>", unsafe_allow_html=True)
 
 
-##### URL入力エリア #####
+##### URL入力エリア ####################
 
 # リクエスト先URLを入力するテキストボックス
 st.markdown('<p style="font-size:18px;color:#00ffff;">手順1：Stable Diffusion WebUIのURLを入力してください。</P>', unsafe_allow_html=True)
@@ -77,12 +77,12 @@ api_url_tmp = st.text_input("https://~~~.gradio.live　※http: //0.0.0.0：7860
 api_url = api_url_tmp.rstrip("/")
 st.session_state['api_url'] = api_url
 
+
+##### 画像選択エリア ####################
+
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown('<p style="font-size:18px;color:#00ffff;">手順2：衣装画像、マスク画像、マネキン画像を選択してください。</P>', unsafe_allow_html=True)
 st.markdown('<div style="color:#ff0000;font-size:14px;line-height:0;">※衣装画像とマスク画像は、幅と高さが同じ画像を使用して下さい。</div><br><br>', unsafe_allow_html=True)
-
-
-##### 画像選択エリア #####
 
 # 3つのカラムを作成
 col1, col2, col3 = st.columns([1, 1, 1])
@@ -181,7 +181,8 @@ with st.container():
     # 画像生成ボタン
     if st.button("画像を生成"):
 
-        if img1 and img2 and img3:
+        if img1 and img2 and img3 is not None:
+
             # 画像データを取得
             img1_data = uploaded_file1.getvalue()
             img2_data = uploaded_file2.getvalue()
