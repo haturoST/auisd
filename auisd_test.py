@@ -5,9 +5,7 @@ import numpy as np
 import base64
 import mimetypes
 import io
-#from io import BytesIO
 import os
-import platform
 import datetime
 
 MAX_SIZE_MB = 2  # 最大ファイルサイズ (MB)
@@ -43,7 +41,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# フィッターを追加
+# フッターを追加
 footer = """
     <style>
         .footer {
@@ -64,9 +62,9 @@ footer = """
     </div>
 """
 
-##############################################################
+###################################################################
 #   StreamlitでUIを作成
-##############################################################
+###################################################################
 
 st.title('Aui for SD AUTOMATIC1111')
 st.markdown("<br>", unsafe_allow_html=True)
@@ -185,46 +183,10 @@ with st.container():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # OSの種類を取得
-    #os_type = platform.system()
-
-    # OSに応じたディレクトリを設定
-    #if os_type == 'Windows':
-
-        # 画像の保存先ディレクトリのパスを定義
-    #    save_dir = 'C:/auisd/temp'
-    #    st.session_state['save_dir'] = save_dir
-
-    #elif os_type == 'Darwin':  # MacOSの場合
-
-        #save_dir = '/Users/your_username/auisd/outputs'
-
-        # ホームディレクトリを取得
-    #    home_dir = os.path.expanduser('~') 
-    #    save_dir = os.path.join(home_dir, 'auisd', 'temp')
-
-        # 画像の保存先ディレクトリのパスを定義
-    #    st.session_state['save_dir'] = save_dir
-    
-    #elif os_type == 'Linux':  # Linuxの場合
-
-        # ホームディレクトリを取得
-    #    home_dir = os.path.expanduser('~')
-    #    save_dir = os.path.join(home_dir, 'auisd', 'temp')
-
-        # 画像の保存先ディレクトリのパスを定義
-    #    st.session_state['save_dir'] = save_dir
-        
-    #else:
-    #    raise Exception("Unsupported OS")
-
-    # ディレクトリが存在しない場合は作成
-    #os.makedirs(save_dir, exist_ok=True)
-
     save_dir = '/tmp'
     st.session_state['save_dir'] = save_dir
 
-# 画像生成ボタン
+    # 画像生成ボタン
     if st.button("画像を生成"):
 
         if img1 and img2 and img3:
@@ -238,28 +200,26 @@ with st.container():
             img2_ext = mimetypes.guess_extension(uploaded_file2.type)
             img3_ext = mimetypes.guess_extension(uploaded_file3.type)
 
-            # ローカルに保存
+            # 保存先のパスとファイル名
             img1_path = f"{save_dir}/cloth{img1_ext}"
             img2_path = f"{save_dir}/mask{img2_ext}"
             img3_path = f"{save_dir}/body{img3_ext}"
 
+            # 保存
             with open(img1_path, "wb") as f:
                 f.write(img1_data)
-                #st.success(f"{img1_path} を保存しました。")
 
             with open(img2_path, "wb") as f:
                 f.write(img2_data)
-                #st.success(f"{img2_path} を保存しました。")
 
             with open(img3_path, "wb") as f:
                 f.write(img3_data)
-                #st.success(f"{img3_path} を保存しました。")
 
-        #input("Enterキーを押すと処理が再開されます...")
 
-        ###################################################
-        # ここにプレースホルダを作成してメッセージを切り替える
-        ###################################################
+###################################################################
+# ここにプレースホルダを作成してメッセージを切り替えることを予定
+###################################################################
+
         st.success("Stable Doffusion WebUIにリクエストを送信しました。")
 
         myprompt = "Portrait MagMix Girl, brown long hair, high heels, indoors, white wall, white ceiling, white floor, white background, Hand, detailed, perfect, perfection, <lora:hand 4:0.3>"
@@ -268,15 +228,15 @@ with st.container():
     
     # フッターを挿入
     st.markdown(footer, unsafe_allow_html=True)
-    #st.markdown('<p style="font-size:small;text-align:center;">©2023 Habanero Groove AI art Studio All rights reserved</P>', unsafe_allow_html=True)
 
 
-##############################################################
+###################################################################
 #   img2img Inpaint Upload + Canny で　output.png を生成
-##############################################################
+###################################################################
 
     if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
-            
+
+        # inpaintuoload用画像とContorolnet用画像を定義
         cloth_image = []
         with open(img1_path, 'rb') as f:
             img_data_cloth = f.read()
@@ -304,8 +264,10 @@ with st.container():
 
         with open(img1_path, "rb") as f:
             img1_base64 = base64.b64encode(f.read()).decode('utf-8')
+
         with open(img2_path, "rb") as f:
             img2_base64 = base64.b64encode(f.read()).decode('utf-8')
+
         with open(img3_path, "rb") as f:
             img3_base64 = base64.b64encode(f.read()).decode('utf-8')
   
@@ -394,32 +356,28 @@ with st.container():
                         f.write(base64.b64decode(generated_images[0]))
                 except Exception as e:
                     st.error(f"画像の保存に失敗しました。: {e}")  
-
-                #print(f"Images saved: {image_name}")
                 
             else:
                 st.error(f"Request failed with status code {response.status_code}")
                 #st.error(response.text)
-                st.error(f"Image generation failed: {response.text}")
+                st.error(f"画像生成に失敗しました。: {response.text}")
 
         i += 1
     
         st.success("標準画像の生成が完了しました。高解像度化処理を開始します。")
 
-#input("1回目の生成処理が完了。Enterキーを押すと処理が再開されます...")  
 
-##############################################################
+###################################################################
 #   img2img + Tile + R-ESRGAN 4x+ で高解像度化
-##############################################################
+###################################################################
 
 if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
-    #if 'Upscale_images' in locals():
     if 'api_url' in st.session_state:
 
         for j in range(2):
-        #print('i値： ',i)
-
+            
+            # 高解像度化用画像の定義
             hiresImage= []
 
             imgFilename = save_dir + '/output' + str(j) + '.png'
@@ -519,9 +477,11 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 
                 # 生成された画像を取得
                 hires_result = upscale_response.json()
+
                 # 生成した高解像度化画像変数を定義
                 hires_generated_images = hires_result['images']
 
+                # 保存先のパス
                 save_dir = st.session_state['save_dir']
 
                 # 画像の保存処理
@@ -532,28 +492,27 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     with open(hires_full_path, 'wb') as f:
                         f.write(base64.b64decode(hires_generated_images[0]))
                 except Exception as e:
-                    st.error(f"Failed to save image: {e}") 
+                    st.error(f"画像の保存に失敗しました。: {e}") 
                     
             else:
-                st.error(f"Upscale failed: {upscale_response.text}")
+                st.error(f"高解像度化に失敗しました。: {upscale_response.text}")
         j += 1
 
-#input("2回目の生成処理が完了。Enterキーを押すと処理が再開されます...")
 
-##############################################################
+###################################################################
 #   ADtetailerで顔を修正して完成画像を保存
-##############################################################
+###################################################################
 
-    #if 'Adetailer_images' in locals():
     if 'api_url' in st.session_state:
 
         seq_digit = 5
         
-        # 画像の保存先ディレクトリのパスを定義
+        # 画像の保存パスを定義
         st.session_state['save_dir'] = save_dir
 
         for k in range(2):
 
+            # 顔修正用画像の定義
             adImage= []
 
             adimgFilename = save_dir + '/output_hires' + str(k) + '.png'
@@ -566,125 +525,93 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
             adImage = [image_b64]
 
             adetailer_payload = {
-            "batch_size": 1,
-            #"cfg_scale": 5,
-            #"denoising_strength": 0.35,
-            "init_images": adImage,
-            "n": 2,
-            "negative_prompt": mynegativeprompt,
-            "prompt": myprompt,
-            # "sampler_name": "DPM++ SDE",
-            # "scheduler": "Karass",
-            # "seed" : myseed,
-            #"hight": 2066,
-            #"width": 1024,
-                "alwayson_scripts": {
-                "ADetailer": {
-                    "args": [
-                        True,
-                        True,
-                        {
-                            "ad_cfg_scale": 7,
-                            # "ad_checkpoint": "Use same checkpoint",
-                            #"ad_clip_skip": 1,
-                            "ad_confidence": 0.3,
-                            "ad_controlnet_guidance_end": 1,
-                            "ad_controlnet_guidance_start": 0,
-                            #"ad_controlnet_model": "None",
-                            #"ad_controlnet_module": "None",
-                            #"ad_controlnet_weight": 1,
-                            #"ad_denoising_strength": 0.4,
-                            "ad_dilate_erode": 4,
-                            "ad_inpaint_height": 512,
-                            "ad_inpaint_only_masked": True,
-                            "ad_inpaint_only_masked_padding": 32,
-                            "ad_inpaint_width": 512,
-                            "ad_mask_blur": 4,
-                            "ad_mask_k_largest": 0,
-                            "ad_mask_max_ratio": 1,
-                            #"ad_mask_merge_invert": "None",
-                            "ad_mask_min_ratio": 0,
-                            "ad_model": "mediapipe_face_full",
-                            #"ad_model_classes": "",
-                            #"ad_negative_prompt": "",
-                            #"ad_noise_multiplier": 1,
-                            #"ad_prompt": "",
-                            #"ad_restore_face": False,
-                            #"ad_sampler": "DPM++ 2M",
-                            #"ad_scheduler": "Use same scheduler",
-                            "ad_steps": 28,
-                            #"ad_tab_enable": True,
-                            #"ad_use_cfg_scale": False,
-                            #"ad_use_checkpoint": False,
-                            #"ad_use_clip_skip": False,
-                            #"ad_use_inpaint_width_height": False,
-                            #"ad_use_noise_multiplier": False,
-                            #"ad_use_sampler": False,
-                            #"ad_use_steps": False,
-                            #"ad_use_vae": False,
-                            #"ad_vae": "Use same VAE",
-                            #"ad_x_offset": 0,
-                            #"ad_y_offset": 0,
-                            #"is_api": []
-                        }
-                    ]
-                },
-                "Soft Inpainting": {
+                "batch_size": 1,
+                #"cfg_scale": 5,
+                #"denoising_strength": 0.35,
+                "init_images": adImage,
+                "n": 2,
+                "negative_prompt": mynegativeprompt,
+                "prompt": myprompt,
+                # "sampler_name": "DPM++ SDE",
+                # "scheduler": "Karass",
+                # "seed" : myseed,
+                #"hight": 2066,
+                #"width": 1024,
+                    "alwayson_scripts": {
+                    "ADetailer": {
                         "args": [
                             True,
-                            1,
-                            0.5,
-                            4,
-                            0,
-                            0.5,
-                            2
-                    ]
+                            True,
+                            {
+                                "ad_cfg_scale": 7,
+                                # "ad_checkpoint": "Use same checkpoint",
+                                #"ad_clip_skip": 1,
+                                "ad_confidence": 0.3,
+                                "ad_controlnet_guidance_end": 1,
+                                "ad_controlnet_guidance_start": 0,
+                                #"ad_controlnet_model": "None",
+                                #"ad_controlnet_module": "None",
+                                #"ad_controlnet_weight": 1,
+                                #"ad_denoising_strength": 0.4,
+                                "ad_dilate_erode": 4,
+                                "ad_inpaint_height": 512,
+                                "ad_inpaint_only_masked": True,
+                                "ad_inpaint_only_masked_padding": 32,
+                                "ad_inpaint_width": 512,
+                                "ad_mask_blur": 4,
+                                "ad_mask_k_largest": 0,
+                                "ad_mask_max_ratio": 1,
+                                #"ad_mask_merge_invert": "None",
+                                "ad_mask_min_ratio": 0,
+                                "ad_model": "mediapipe_face_full",
+                                #"ad_model_classes": "",
+                                #"ad_negative_prompt": "",
+                                #"ad_noise_multiplier": 1,
+                                #"ad_prompt": "",
+                                #"ad_restore_face": False,
+                                #"ad_sampler": "DPM++ 2M",
+                                #"ad_scheduler": "Use same scheduler",
+                                "ad_steps": 28,
+                                #"ad_tab_enable": True,
+                                #"ad_use_cfg_scale": False,
+                                #"ad_use_checkpoint": False,
+                                #"ad_use_clip_skip": False,
+                                #"ad_use_inpaint_width_height": False,
+                                #"ad_use_noise_multiplier": False,
+                                #"ad_use_sampler": False,
+                                #"ad_use_steps": False,
+                                #"ad_use_vae": False,
+                                #"ad_vae": "Use same VAE",
+                                #"ad_x_offset": 0,
+                                #"ad_y_offset": 0,
+                                #"is_api": []
+                            }
+                        ]
+                    },
+                    "Soft Inpainting": {
+                            "args": [
+                                True,
+                                1,
+                                0.5,
+                                4,
+                                0,
+                                0.5,
+                                2
+                        ]
+                    }
                 }
             }
-        }
 
             adetailer_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=adetailer_payload)
-            #response = requests.post(api_url+'/sdapi/v1/img2img', files=files)
 
             if adetailer_response.status_code == 200:
-                #st.success("Images refined with Adetailer successfully")
-
-                # OSに応じたディレクトリを設定
-                #if os_type == 'Windows':
-
-                    # 画像の保存先ディレクトリのパスを定義
-                #    save_dir_comp = 'C:/auisd/outputs'
-                    #st.session_state['save_dir'] = save_dir_comp
-
-                #elif os_type == 'Darwin':  # MacOSの場合
-
-                    # ホームディレクトリを取得
-                #    home_dir = os.path.expanduser('~') 
-                #    save_dir_comp = os.path.join(home_dir, 'auisd', 'outputs')
-
-                #elif os_type == 'Linux':  # Linuxの場合
-
-                    # ホームディレクトリを取得
-                #    home_dir = os.path.expanduser('~')
-                #    save_dir = os.path.join(home_dir, 'auisd', 'temp')
-
-                    # 画像の保存先ディレクトリのパスを定義
-                #    st.session_state['save_dir'] = save_dir
-                    
-                #else:
-                #    raise Exception("Unsupported OS")
-
 
                 # 生成された画像を取得
                 ad_result = adetailer_response.json() #['images']
+
                 # 生成した完成画像変数を定義
                 last_generated_images = ad_result['images']
 
-                # 現在の日付を取得し、ディレクトリ名を作成
-                #today = datetime.date.today()
-                # YYYY-MM-DD format
-                #date_folder_name = today.strftime('%Y-%m-%d')
-                
                 # 完成画像の保存パス
                 save_dir_outputs = '/tmp/outputs'
 
@@ -694,15 +621,12 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 # '/tmp/outputs内のファイル数をカウント
                 file_count = sum(os.path.isfile(os.path.join(save_dir_outputs, name)) for name in os.listdir(save_dir_outputs))
                 
-                #st.success(f"{save_dir_date} 内にあるファイル数は、{file_count} 個")
-
+                # ファイル名に追加する連番
                 renban = f"{file_count + 1 - 1:0{seq_digit}}"
 
                 # 完成画像のファイル名
                 ad_image_name = renban + '-compimg.png'
                 ad_full_path = os.path.join(save_dir_outputs, ad_image_name)
-
-                #st.success(ad_image_name)
 
                 try:
                     with open(ad_full_path, 'wb') as f:
@@ -710,10 +634,10 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 except Exception as e:
                     st.error(f"画像の保存に失敗しました。: {e}")
 
-                # 画像を表示
+                # 完成画像を表示
                 st.image(ad_full_path, caption=ad_image_name, use_column_width=True)
 
-                # ダウンロードリンクを作成
+                # 完成画像のダウンロードリンクを作成
                 def get_image_download_link(ad_full_path, ad_image_name):
                     with open(ad_full_path, "rb") as file:
                         img_bytes = file.read()
@@ -725,7 +649,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 download_link = get_image_download_link(ad_full_path, "downloaded_image.png")
                 st.markdown(download_link, unsafe_allow_html=True)
 
-                # さらにbase64でエンコードされた画像を表示したい場合
+                # base64でエンコードされた画像を表示
                 #with open(ad_full_path, "rb") as f:
                 #    img_base64 = base64.b64encode(f.read()).decode("utf-8")
                     
@@ -735,8 +659,6 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 #    )
 
             else:
-                st.error(f"Adetailer failed: {adetailer_response.text}")
+                st.error(f"Adetailerでの処理に失敗しました。: {adetailer_response.text}")
 
-            i += 1
-
-    #st.success("全ての処理が終了しました。")
+            k += 1
