@@ -181,11 +181,13 @@ with st.container():
     # 画像生成ボタン
     st.button("画像を生成")
 
+    uploaded_files = [uploaded_file1, uploaded_file2, uploaded_file3]
+
     st.session_state['image1'] = img1
     st.session_state['image2'] = img2
     st.session_state['image3'] = img3
 
-    if img1 and img2 and img3 is not None:
+    if uploaded_files is not None: # img1 and img2 and img3 is not None:
 
         # 画像データを取得
         img1_data = uploaded_file1.getvalue()
