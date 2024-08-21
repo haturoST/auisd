@@ -13,10 +13,10 @@ import os
 ##############################################################
 
 #####---> Streamlit Clour(Linux Server)
-# save_dir = '/tmp'
+save_dir = '/tmp'
 
 #####---> Windwos Local
-save_dir = 'c:/tmp'
+# save_dir = 'c:/tmp'
 
 #####---> Mac Local or Linux Local
 # ホームディレクトリを取得してから定義
@@ -587,10 +587,10 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     #save_dir = st.session_state['save_dir']
 
                     #####---> Streamlit Clour(Linux Server)
-                    # save_dir = '/tmp'
+                    save_dir = '/tmp'
 
                     #####---> Windwos Local
-                    save_dir_outputs = 'c:/tmp'
+                    # save_dir_outputs = 'c:/tmp'
 
                     #####---> Mac Local or Linux Local
                     # ホームディレクトリを取得してから定義
@@ -729,10 +729,10 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     # 完成画像の保存先ディレクトリのパスを定義
 
                     #####---> Streamlit Clour(Linux Server)
-                    # save_dir = '/tmp/outputs'
+                    save_dir = '/tmp/outputs'
 
                     #####---> Windwos Local
-                    save_dir_outputs = 'c:/tmp/outputs'
+                    # save_dir_outputs = 'c:/tmp/outputs'
 
                     #####---> Mac Local or Linux Local
                     # ホームディレクトリを取得してから定義
