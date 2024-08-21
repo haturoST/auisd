@@ -446,7 +446,7 @@ with st.container():
 
                     if response.status_code == 200:
 
-                        st.write(f"{i + 1}枚目の標準画像を生成中です。") 
+                        st.write(f"{i + 1}枚目の標準画像を生成しました。") 
 
                         # 生成された画像を取得
                         result = response.json()
@@ -487,8 +487,8 @@ with st.container():
                 if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
                     # 画像の保存パス 
-                    save_dir = st.session_state['save_dir']
-                    st.write(f"セッションステートから受け取った保存ディレクトリ： {save_dir}")
+                    # save_dir = st.session_state['save_dir']
+                    # st.write(f"セッションステートから受け取った保存ディレクトリ： {save_dir}")
 
                     if 'api_url' in st.session_state:
 
@@ -612,13 +612,13 @@ with st.container():
                                 hires_generated_images = hires_result['images']
 
                                 # 保存先のパス
-                                save_dir0 = "/tmp"
+                                save_dir = "/tmp"
                                 # st.write(f"直接記述した保存ディレクトリ: {save_dir}")
                                 # save_dir = st.session_state['save_dir']
 
                                 # 画像の保存処理
-                                hires_image_name = f"houtput{j}.png"
-                                hires_full_path = os.path.join(save_dir0, hires_image_name)
+                                hires_image_name = f"hires_output{j}.png"
+                                hires_full_path = os.path.join(save_dir, hires_image_name)
                                 st.write(hires_full_path)
 
                                 try:
@@ -666,7 +666,7 @@ with st.container():
                         # 顔修正用画像の定義
                         adImage= []
 
-                        adimgFilename = save_dir + '/houtput' + str(k) + '.png'
+                        adimgFilename = save_dir + '/hires_output' + str(k) + '.png'
                         src_img = Image.open(adimgFilename)
                         img_bytes = io.BytesIO()
                         src_img.save(img_bytes, format='png')
@@ -772,10 +772,11 @@ with st.container():
                             last_generated_images = ad_result['images']
 
                             # 完成画像の保存先ディレクトリのパスを定義
+                            save_dir_outputs = '/tmp/outputs'
 
                             #####---> Streamlit Clour(Linux Server)
-                            home_dir = os.path.expanduser('~') 
-                            save_dir_outputs = os.path.join(home_dir, 'tmp', 'outputs')
+                            # home_dir = os.path.expanduser('~') 
+                            # save_dir_outputs = os.path.join(home_dir, 'tmp', 'outputs')
                             # save_dir_outputs = 'tmp/outputs'
 
                             #####---> Windwos Local
