@@ -482,7 +482,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 # 高解像度化用画像の定義
                 hiresImage= []
 
-                imgFilename = save_dir + '/output' + str(j) + '.png'
+                imgFilename = save_dir + str(j) + '.png'
                 src_img = Image.open(imgFilename)
                 img_bytes = io.BytesIO()
                 src_img.save(img_bytes, format='png')
