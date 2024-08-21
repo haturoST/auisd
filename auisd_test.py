@@ -529,7 +529,7 @@ with st.container():
                                     "<p style=\"margin-bottom:0.75em\">Will upscale the image by the selected scale factor; use width and height sliders to set tile size</p>",
                                     64,
                                     3, #--- 4x-UltraSharp【注意】APIで SwinIR 4x が動作せず（要検証）
-                                    1.8
+                                    1.5
                                 ],
                                 "script_name": "sd upscale",
                                 "seed": -1,
@@ -591,7 +591,7 @@ with st.container():
                             }
 
                             upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=1200, stream=True)
-                            time.sleep(30)
+                            time.sleep(10)
 
                             if upscale_response.status_code == 200:
 
