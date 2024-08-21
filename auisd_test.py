@@ -472,6 +472,15 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
     st.success("標準画像の生成が完了しました。高解像度化処理を開始します。")
 
+    # Get a list of files and directories in /tmp
+    if os.path.exists(save_dir):
+        files = os.listdir(save_dir)
+        st.write(f"Contents of {save_dir}:")
+        for file in files:
+            st.write(file)
+    else:
+        st.write(f"{save_dir} does not exist.")
+
 
 ################################################################################
 # #   img2img + Tile + R-ESRGAN 4x+ で高解像度化
