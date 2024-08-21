@@ -591,6 +591,7 @@ with st.container():
                             }
 
                             upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=1200, stream=True)
+                            time.sleep(30)
 
                             if upscale_response.status_code == 200:
 
@@ -598,8 +599,7 @@ with st.container():
                                 
                                     # 必要に応じてチャンクを処理
                                     st.write(chunk)
-                                    time.sleep(30)
-                                
+                                                                    
                                 # 全てのチャンクを受け取った後にJSONをパース
                                 hires_result = upscale_response.json()
 
