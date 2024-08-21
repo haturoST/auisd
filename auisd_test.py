@@ -441,7 +441,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
         }
 
         # APIリクエストを送信
-        response = requests.post(api_url+'/sdapi/v1/img2img', json=payload)
+        response = requests.post(api_url+'/sdapi/v1/img2img', json=payload, timeout=300)
 
         if response.status_code == 200:
 
@@ -581,7 +581,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                         }
                 }
 
-                upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=1000)
+                upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=300)
 
                 if upscale_response.status_code == 200:
                     
