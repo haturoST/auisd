@@ -13,7 +13,7 @@ import os
 ##############################################################
 
 #####---> Streamlit Clour(Linux Server)
-save_dir = '/tmp'
+save_dir = 'tmp'
 
 #####---> Windwos Local
 # save_dir = 'c:/tmp'
@@ -482,7 +482,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 # 高解像度化用画像の定義
                 hiresImage= []
 
-                imgFilename = save_dir + '/output' + str(j) + '.png'
+                imgFilename = save_dir + 'output' + str(j) + '.png'
                 src_img = Image.open(imgFilename)
                 img_bytes = io.BytesIO()
                 src_img.save(img_bytes, format='png')
@@ -493,8 +493,8 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
                 # Payloadにそれぞれの画像パスを含める
                 files = {
-                    "hiresImage0": open(save_dir + '/output0.png', "rb"),
-                    "hiresImage1": open(save_dir + '/output1.png', "rb"),
+                    "hiresImage0": open(save_dir + 'output0.png', "rb"),
+                    "hiresImage1": open(save_dir + 'output1.png', "rb"),
                 }
 
                 upscale_payload = {
@@ -587,7 +587,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     #save_dir = st.session_state['save_dir']
 
                     #####---> Streamlit Clour(Linux Server)
-                    save_dir = '/tmp'
+                    #save_dir = 'tmp'
 
                     #####---> Windwos Local
                     # save_dir_outputs = 'c:/tmp'
@@ -629,7 +629,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 # 顔修正用画像の定義
                 adImage= []
 
-                adimgFilename = save_dir + '/hires_output' + str(k) + '.png'
+                adimgFilename = save_dir + 'hires_output' + str(k) + '.png'
                 src_img = Image.open(adimgFilename)
                 img_bytes = io.BytesIO()
                 src_img.save(img_bytes, format='png')
@@ -729,7 +729,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     # 完成画像の保存先ディレクトリのパスを定義
 
                     #####---> Streamlit Clour(Linux Server)
-                    save_dir_outputs = '/tmp/outputs'
+                    save_dir_outputs = 'tmp/outputs'
 
                     #####---> Windwos Local
                     # save_dir_outputs = 'c:/tmp/outputs'
