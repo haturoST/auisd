@@ -15,8 +15,10 @@ import time
 
 #####---> Streamlit Clour(Linux Server)
 # ホームディレクトリを取得してから定義
-home_dir = os.path.expanduser('~') 
-save_dir = save_dir = os.path.join(home_dir, 'tmp')
+# home_dir = os.path.expanduser('~') 
+# save_dir = save_dir = os.path.join(home_dir, 'tmp')
+
+save_dir = '/tmp'
 
 #####---> Windwos Local
 # save_dir = 'c:/tmp'
@@ -30,7 +32,7 @@ save_dir = save_dir = os.path.join(home_dir, 'tmp')
 st.session_state['save_dir'] = save_dir
 
 # ディレクトリが存在しない場合は作成
-os.makedirs(save_dir, exist_ok=True)
+# os.makedirs(save_dir, exist_ok=True)
 
 
 ##############################################################
