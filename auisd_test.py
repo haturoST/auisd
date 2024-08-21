@@ -582,7 +582,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                         }
                 }
 
-                upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=300)
+                upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=600)
 
                 if upscale_response.status_code == 200:
                     
@@ -610,7 +610,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                         #st.stop()
                         
                 else:
-                    st.error(f"画像情報: {hires_result}")
+                    # st.error(f"画像情報: {hires_result}")
                     st.error(f"hires画像のフルパス: {hires_full_path}")
                     st.error(f"タイムアウトを受信しました。再度画像を生成してください。 {upscale_response.text}")
 
