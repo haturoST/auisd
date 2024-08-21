@@ -595,7 +595,6 @@ with st.container():
                             st.write("リクエスト内容を確認")
 
                             upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=1200, stream=True)
-                            time.sleep(10)
 
                             if upscale_response.status_code == 200:
 
@@ -764,7 +763,6 @@ with st.container():
                                 
                                 # 必要に応じてチャンクを処理
                                 st.write(chunk)
-                                time.sleep(5)
                             
                             # 全てのチャンクを受け取った後にJSONをパース
                             ad_result = adetailer_response.json()
@@ -776,7 +774,7 @@ with st.container():
                             last_generated_images = ad_result['images']
 
                             # 完成画像の保存先ディレクトリのパスを定義
-                            save_dir_outputs = '/tmp/outputs'
+                            save_dir = '/tmp'
 
                             #####---> Streamlit Clour(Linux Server)
                             # home_dir = os.path.expanduser('~') 
@@ -792,17 +790,17 @@ with st.container():
                             # save_dir_putputs = os.path.join(home_dir, 'tmp', 'outputs')
 
                             # ディレクトリが存在しない場合は作成
-                            os.makedirs(save_dir_outputs, exist_ok=True)
+                            # os.makedirs(save_dir, exist_ok=True)
 
                             # '/tmp/outputs内のファイル数をカウント
-                            file_count = sum(os.path.isfile(os.path.join(save_dir_outputs, name)) for name in os.listdir(save_dir_outputs))
+                            file_count = sum(os.path.isfile(os.path.join(save_dir, name)) for name in os.listdir(save_dir))
                             
                             # ファイル名に追加する連番
                             renban = f"{file_count + 1 - 1:0{seq_digit}}"
 
                             # 完成画像のファイル名
                             ad_image_name = renban + '-compimg.png'
-                            ad_full_path = os.path.join(save_dir_outputs, ad_image_name)
+                            ad_full_path = os.path.join(save_dir, ad_image_name)
 
                             try:
                                 with open(ad_full_path, 'wb') as f:
