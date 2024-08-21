@@ -593,13 +593,13 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     hires_generated_images = hires_result['images']
 
                     # 保存先のパス
-                    save_dir = "/tmp"
+                    save_dir0 = "/tmp"
                     st.write(f"直接記述した保存ディレクトリ: {save_dir}")
                     # save_dir = st.session_state['save_dir']
 
                     # 画像の保存処理
                     hires_image_name = f"hires_output{j}.png"
-                    hires_full_path = os.path.join(save_dir, hires_image_name)
+                    hires_full_path = os.path.join(save_dir0, hires_image_name)
                     st.write(hires_full_path)
                     
                     try:
@@ -610,7 +610,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                         #st.stop()
                         
                 else:
-                    st.error(f"タイムアウトを受信しました。再度画像を生成してください。 {upscale_response.text}")
+                    st.error(f"タイムアウトを受信しました。再度画像を生成してください。 画像情報: {hires_generated_images}{hires_full_path}{upscale_response.text}")
 
             j += 1
 
