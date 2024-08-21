@@ -577,7 +577,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                         }
                 }
 
-                upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload)
+                upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=300)
 
                 if upscale_response.status_code == 200:
                     
@@ -604,6 +604,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     # 画像の保存処理
                     hires_image_name = f"hires_output{j}.png"
                     hires_full_path = os.path.join(save_dir, hires_image_name)
+                    st.success(hires_full_path)
                     
                     try:
                         with open(hires_full_path, 'wb') as f:
