@@ -6,6 +6,7 @@ import base64
 import mimetypes
 import io
 import os
+import time
 
 
 ##############################################################
@@ -354,7 +355,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
     for i in range(2):
         
-        st.write(f"{i}枚目の標準画像を生成中です。") 
+        st.write(f"{i + 1}枚目の標準画像を生成中です。") 
 
         payload = {
             "batch_size" :1,
@@ -446,6 +447,8 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
         response = requests.post(api_url+'/sdapi/v1/img2img', json=payload, timeout=300)
 
         if response.status_code == 200:
+
+            st.write(f"{j + 1}枚目の標準画像を生成中です。") 
 
             # 生成された画像を取得
             result = response.json()
@@ -587,43 +590,98 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                         }
                 }
 
-                upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=600)
+                max_retries = 10
+                retry_count = 0
+                success = False
 
-                if upscale_response.status_code == 200:
+                while retry_count < max_retries and not success:
+                        
+                        try:
+                            upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=600)
+                            
+                            if upscale_response.status_code == 200:
 
-                    st.write(f"{j}枚目の高解像度化画像の情報を受け取っています。")
+                                    st.write(f"{j}枚目の高解像度化画像の情報を受け取っています。")
+                                    
+                                    # 生成された画像を取得
+                                    hires_result = upscale_response.json()
+                            
+                                    # 生成した高解像度化画像変数を定義 
+                                    hires_generated_images = hires_result['images']
+
+                                    # 保存先のパス
+                                    save_dir0 = "/tmp"
+                                    st.write(f"直接記述した保存ディレクトリ: {save_dir}")
+                                    # save_dir = st.session_state['save_dir']
+
+                                    # 画像の保存処理
+                                    hires_image_name = f"hires_output{j}.png"
+                                    hires_full_path = os.path.join(save_dir0, hires_image_name)
+                                    st.write(hires_full_path)
+                                    
+                                    try:
+                                        with open(hires_full_path, 'wb') as f:
+                                            f.write(base64.b64decode(hires_generated_images[0]))
+                                    except Exception as e:
+                                        st.error(f"画像の保存に失敗しました。 {e}") 
+                                        #st.stop()
+
+                                    success = True
+                       
+                            else:
+                       
+                                retry_count += 1
+                                st.warning(f"リトライ {retry_count}/{max_retries}...")
+                                time.sleep(10)  # 10秒待機して再試行
+                       
+                        except requests.exceptions.Timeout:
+                       
+                            retry_count += 1
+                        # st.warning(f"タイムアウト。リトライ {retry_count}/{max_retries}...")
+                        time.sleep(10)
+
+                if not success:
+                    st.error(f"リクエストが {max_retries} 回試行されましたが、成功しませんでした。")
+                    st.stop()
+
+
+                # upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=600)
+
+                # if upscale_response.status_code == 200:
+
+                    # st.write(f"{j}枚目の高解像度化画像の情報を受け取っています。")
                     
                     # 生成された画像を取得
-                    hires_result = upscale_response.json()
+                    # hires_result = upscale_response.json()
             
                     # 生成した高解像度化画像変数を定義 
-                    hires_generated_images = hires_result['images']
+                    # hires_generated_images = hires_result['images']
 
                     # 保存先のパス
-                    save_dir0 = "/tmp"
-                    st.write(f"直接記述した保存ディレクトリ: {save_dir}")
+                    #save_dir0 = "/tmp"
+                    # st.write(f"直接記述した保存ディレクトリ: {save_dir}")
                     # save_dir = st.session_state['save_dir']
 
                     # 画像の保存処理
-                    hires_image_name = f"hires_output{j}.png"
-                    hires_full_path = os.path.join(save_dir0, hires_image_name)
-                    st.write(hires_full_path)
+                    # hires_image_name = f"hires_output{j}.png"
+                    # hires_full_path = os.path.join(save_dir0, hires_image_name)
+                    # st.write(hires_full_path)
                     
-                    try:
-                        with open(hires_full_path, 'wb') as f:
-                            f.write(base64.b64decode(hires_generated_images[0]))
-                    except Exception as e:
-                        st.error(f"画像の保存に失敗しました。 {e}") 
-                        #st.stop()
+                    # try:
+                        #with open(hires_full_path, 'wb') as f:
+                            # f.write(base64.b64decode(hires_generated_images[0]))
+                    # except Exception as e:
+                        # st.error(f"画像の保存に失敗しました。 {e}") 
+                        # st.stop()
                         
-                else:
+                # else:
                     # st.error(f"画像情報: {hires_result}")
                     # st.error(f"hires画像のフルパス: {hires_full_path}")
-                    st.error(f"タイムアウトを受信しました。再度画像を生成してください。 {upscale_response.text}")
+                    # st.error(f"タイムアウトを受信しました。再度画像を生成してください。 {upscale_response.text}")
 
             j += 1
 
-        # Get a list of files and directories in /tmp
+        # /tmp内にあるファイルを表示
         if os.path.exists(save_dir):
             files = os.listdir(save_dir)
             st.write(f"Contents of {save_dir}:")
