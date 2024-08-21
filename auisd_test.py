@@ -281,7 +281,7 @@ myprompt = prompt_options[selected_prompt]
 # chosen_negative_prompt = negative_prompt_options[selected_negative_prompt]
 
 # 選択したプロンプト・ネガティブプロンプトを表示
-# st.write("適用するプロンプト:", myprompt)
+st.write("適用するプロンプト:", myprompt)
 # st.write("Selected Negative Prompt:", chosen_negative_prompt)
 
 
@@ -632,7 +632,9 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                        
                                 retry_count += 1
                                 st.warning(f"リトライ {retry_count}/{max_retries}...")
-                                time.sleep(10)  # 10秒待機して再試行
+
+                                # 10秒待機して再試行
+                                time.sleep(10)
                        
                         except requests.exceptions.Timeout:
                        
