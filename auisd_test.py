@@ -619,6 +619,8 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
         else:
             st.write(f"{save_dir} does not exist.")
 
+        st.stop()
+
 ################################################################################
 #   ADtetailerで顔を修正して完成画像を保存
 ################################################################################
