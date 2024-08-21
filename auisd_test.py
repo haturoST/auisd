@@ -13,7 +13,9 @@ import os
 ##############################################################
 
 #####---> Streamlit Clour(Linux Server)
-save_dir = 'tmp'
+# ホームディレクトリを取得してから定義
+home_dir = os.path.expanduser('~') 
+save_dir = save_dir = os.path.join(home_dir, 'tmp')
 
 #####---> Windwos Local
 # save_dir = 'c:/tmp'
@@ -482,7 +484,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 # 高解像度化用画像の定義
                 hiresImage= []
 
-                imgFilename = save_dir + 'output' + str(j) + '.png'
+                imgFilename = save_dir + '/output' + str(j) + '.png'
                 src_img = Image.open(imgFilename)
                 img_bytes = io.BytesIO()
                 src_img.save(img_bytes, format='png')
@@ -629,7 +631,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 # 顔修正用画像の定義
                 adImage= []
 
-                adimgFilename = save_dir + 'hires_output' + str(k) + '.png'
+                adimgFilename = save_dir + '/hires_output' + str(k) + '.png'
                 src_img = Image.open(adimgFilename)
                 img_bytes = io.BytesIO()
                 src_img.save(img_bytes, format='png')
@@ -729,7 +731,9 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     # 完成画像の保存先ディレクトリのパスを定義
 
                     #####---> Streamlit Clour(Linux Server)
-                    save_dir_outputs = 'tmp/outputs'
+                    home_dir = os.path.expanduser('~') 
+                    save_dir_outputs = os.path.join(home_dir, 'tmp', 'outputs')
+                    # save_dir_outputs = 'tmp/outputs'
 
                     #####---> Windwos Local
                     # save_dir_outputs = 'c:/tmp/outputs'
@@ -737,7 +741,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     #####---> Mac Local or Linux Local
                     # ホームディレクトリを取得してから定義
                     # home_dir = os.path.expanduser('~') 
-                    # save_dir = os.path.join(home_dir, 'tmp', 'outputs')
+                    # save_dir_putputs = os.path.join(home_dir, 'tmp', 'outputs')
 
                     # ディレクトリが存在しない場合は作成
                     os.makedirs(save_dir_outputs, exist_ok=True)
