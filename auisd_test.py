@@ -528,7 +528,7 @@ with st.container():
                                 "script_args": [
                                     "<p style=\"margin-bottom:0.75em\">Will upscale the image by the selected scale factor; use width and height sliders to set tile size</p>",
                                     64,
-                                    3, #--- 4x-UltraSharp【注意】APIで SwinIR 4x が動作せず（要検証）
+                                    8, #--- 4x-UltraSharp【注意】APIで SwinIR 4x が動作せず（要検証）
                                     1.5
                                 ],
                                 "script_name": "sd upscale",
@@ -617,7 +617,7 @@ with st.container():
                                 # save_dir = st.session_state['save_dir']
 
                                 # 画像の保存処理
-                                hires_image_name = f"hires_output{j}.png"
+                                hires_image_name = f"houtput{j}.png"
                                 hires_full_path = os.path.join(save_dir0, hires_image_name)
                                 st.write(hires_full_path)
 
@@ -632,6 +632,9 @@ with st.container():
                                 # st.error(f"画像情報: {hires_result}")
                                 #st.error(f"hires画像のフルパス: {hires_full_path}")
                                 st.error(f"タイムアウトを受信しました。再度画像を生成してください。 {upscale_response.text}")
+                                st.error(f"Request failed with status code {response.status_code}")
+                                st.error(response.text)
+                                st.error(f"画像生成に失敗しました。 {response.text}")
 
                             j += 1
 
@@ -663,7 +666,7 @@ with st.container():
                         # 顔修正用画像の定義
                         adImage= []
 
-                        adimgFilename = save_dir + '/hires_output' + str(k) + '.png'
+                        adimgFilename = save_dir + '/houtput' + str(k) + '.png'
                         src_img = Image.open(adimgFilename)
                         img_bytes = io.BytesIO()
                         src_img.save(img_bytes, format='png')
