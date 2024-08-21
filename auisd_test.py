@@ -598,7 +598,7 @@ with st.container():
                                 
                                     # 必要に応じてチャンクを処理
                                     st.write(chunk)
-                                    time.sleep(5)
+                                    time.sleep(30)
                                 
                                 # 全てのチャンクを受け取った後にJSONをパース
                                 hires_result = upscale_response.json()
