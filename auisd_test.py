@@ -610,7 +610,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                         #st.stop()
                         
                 else:
-                    st.error(f"画像情報: {hires_generated_images}")
+                    st.error(f"画像情報: {hires_result}")
                     st.error(f"hires画像のフルパス: {hires_full_path}")
                     st.error(f"タイムアウトを受信しました。再度画像を生成してください。 {upscale_response.text}")
 
