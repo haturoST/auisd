@@ -4,10 +4,13 @@ from PIL import Image
 import numpy as np
 import base64
 import mimetypes
+import sys
 import io
 import os
 import time
 
+# Add the project's root directory to the system path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 ##############################################################
 #   画像の保存先ディレクトリのパスを定義
@@ -467,7 +470,7 @@ with st.container():
                             st.error(f"画像の保存に失敗しました。 {e}")  
                         
                         # 画像を表示
-                        st.image(full_path, caption="元画像", use_column_width=True)
+                        # st.image(full_path, caption="元画像", use_column_width=True)
                     
                     else:
                         st.error(f"タイムアウトにより、リクエストが失敗しました。再度、画像を生成してくだい。: {response.status_code}")
@@ -479,7 +482,7 @@ with st.container():
 
                 i += 1
 
-                st.success("標準画像の生成が完了しました。高解像度化処理を開始します。")
+                st.write("標準画像の生成が完了しました。高解像度化処理を開始します。")
 
 
             ################################################################################
@@ -511,10 +514,10 @@ with st.container():
                             hiresImage = (image_b64)
 
                             # Payloadにそれぞれの画像パスを含める
-                            #files = {
-                            #    "hiresImage0": open(save_dir + '/output0.png', "rb"),
-                            #    "hiresImage1": open(save_dir + '/output1.png', "rb"),
-                            #}
+                            files = {
+                                "hiresImage0": open(save_dir + '/output0.png', "rb"),
+                                "hiresImage1": open(save_dir + '/output1.png', "rb"),
+                            }
 
                             upscale_payload = {
                                 "batch_size": 1,
@@ -656,186 +659,192 @@ with st.container():
             #   ADtetailerで顔を修正して完成画像を保存
             ################################################################################
 
-                if 'api_url' in st.session_state:
+                    if 'api_url' in st.session_state:
 
-                    seq_digit = 5
-                    k = 0
-                    
-                    # 画像の保存パスを定義
-                    # st.session_state['save_dir'] = save_dir
+                        seq_digit = 5
+                        k = 0
+                        
+                        # 画像の保存パスを定義
+                        # st.session_state['save_dir'] = save_dir
 
-                    for k in range(2):
+                        for k in range(2):
 
-                        # 顔修正用画像の定義
-                        adImage= []
+                            # 顔修正用画像の定義
+                            adImage= []
 
-                        adimgFilename = save_dir + '/hires_output' + str(k) + '.png'
-                        src_img = Image.open(adimgFilename)
-                        img_bytes = io.BytesIO()
-                        src_img.save(img_bytes, format='png')
-                        image_b64 = base64.b64encode(img_bytes.getvalue()).decode('utf-8')
-                        img_bytes.close()
-                        src_img.close()
-                        adImage = [image_b64]
+                            adimgFilename = save_dir + '/hires_output' + str(k) + '.png'
+                            src_img = Image.open(adimgFilename)
+                            img_bytes = io.BytesIO()
+                            src_img.save(img_bytes, format='png')
+                            image_b64 = base64.b64encode(img_bytes.getvalue()).decode('utf-8')
+                            img_bytes.close()
+                            src_img.close()
+                            adImage = [image_b64]
 
-                        adetailer_payload = {
-                            #"batch_size": 1,
-                            "cfg_scale": 5,
-                            #"denoising_strength": 0.35,
-                            "init_images": adImage,
-                            #"n": 2,
-                            "negative_prompt": mynegativeprompt,
-                            "prompt": myprompt,
-                            # "sampler_name": "DPM++ SDE",
-                            # "scheduler": "Karass",
-                            # "seed" : myseed,
-                            #"hight": 2066,
-                            #"width": 1024,
-                                "alwayson_scripts": {
-                                "ADetailer": {
-                                    "args": [
-                                        True,
-                                        True,
-                                        {
-                                            "ad_cfg_scale": 7,
-                                            # "ad_checkpoint": "Use same checkpoint",
-                                            #"ad_clip_skip": 1,
-                                            "ad_confidence": 0.3,
-                                            "ad_controlnet_guidance_end": 1,
-                                            "ad_controlnet_guidance_start": 0,
-                                            #"ad_controlnet_model": "None",
-                                            #"ad_controlnet_module": "None",
-                                            #"ad_controlnet_weight": 1,
-                                            #"ad_denoising_strength": 0.4,
-                                            "ad_dilate_erode": 4,
-                                            "ad_inpaint_height": 512,
-                                            "ad_inpaint_only_masked": True,
-                                            "ad_inpaint_only_masked_padding": 32,
-                                            "ad_inpaint_width": 512,
-                                            "ad_mask_blur": 4,
-                                            "ad_mask_k_largest": 0,
-                                            "ad_mask_max_ratio": 1,
-                                            #"ad_mask_merge_invert": "None",
-                                            "ad_mask_min_ratio": 0,
-                                            "ad_model": "mediapipe_face_full",
-                                            #"ad_model_classes": "",
-                                            #"ad_negative_prompt": "",
-                                            #"ad_noise_multiplier": 1,
-                                            #"ad_prompt": "",
-                                            #"ad_restore_face": False,
-                                            #"ad_sampler": "DPM++ 2M",
-                                            #"ad_scheduler": "Use same scheduler",
-                                            "ad_steps": 28,
-                                            #"ad_tab_enable": True,
-                                            #"ad_use_cfg_scale": False,
-                                            #"ad_use_checkpoint": False,
-                                            #"ad_use_clip_skip": False,
-                                            #"ad_use_inpaint_width_height": False,
-                                            #"ad_use_noise_multiplier": False,
-                                            #"ad_use_sampler": False,
-                                            #"ad_use_steps": False,
-                                            #"ad_use_vae": False,
-                                            #"ad_vae": "Use same VAE",
-                                            #"ad_x_offset": 0,
-                                            #"ad_y_offset": 0,
-                                            #"is_api": []
-                                        }
-                                    ]
-                                },
-                                "Soft Inpainting": {
+                            # Payloadにそれぞれの画像パスを含める
+                            files = {
+                                "adImage0": open(save_dir + '/hires_output0.png', "rb"),
+                                "adImage1": open(save_dir + '/hires_output1.png', "rb"),
+                            }
+
+                            adetailer_payload = {
+                                #"batch_size": 1,
+                                "cfg_scale": 5,
+                                #"denoising_strength": 0.35,
+                                "init_images": adImage,
+                                #"n": 2,
+                                "negative_prompt": mynegativeprompt,
+                                "prompt": myprompt,
+                                # "sampler_name": "DPM++ SDE",
+                                # "scheduler": "Karass",
+                                # "seed" : myseed,
+                                #"hight": 2066,
+                                #"width": 1024,
+                                    "alwayson_scripts": {
+                                    "ADetailer": {
                                         "args": [
                                             True,
-                                            1,
-                                            0.5,
-                                            4,
-                                            0,
-                                            0.5,
-                                            2
-                                    ]
+                                            True,
+                                            {
+                                                "ad_cfg_scale": 7,
+                                                # "ad_checkpoint": "Use same checkpoint",
+                                                #"ad_clip_skip": 1,
+                                                "ad_confidence": 0.3,
+                                                "ad_controlnet_guidance_end": 1,
+                                                "ad_controlnet_guidance_start": 0,
+                                                #"ad_controlnet_model": "None",
+                                                #"ad_controlnet_module": "None",
+                                                #"ad_controlnet_weight": 1,
+                                                #"ad_denoising_strength": 0.4,
+                                                "ad_dilate_erode": 4,
+                                                "ad_inpaint_height": 512,
+                                                "ad_inpaint_only_masked": True,
+                                                "ad_inpaint_only_masked_padding": 32,
+                                                "ad_inpaint_width": 512,
+                                                "ad_mask_blur": 4,
+                                                "ad_mask_k_largest": 0,
+                                                "ad_mask_max_ratio": 1,
+                                                #"ad_mask_merge_invert": "None",
+                                                "ad_mask_min_ratio": 0,
+                                                "ad_model": "mediapipe_face_full",
+                                                #"ad_model_classes": "",
+                                                #"ad_negative_prompt": "",
+                                                #"ad_noise_multiplier": 1,
+                                                #"ad_prompt": "",
+                                                #"ad_restore_face": False,
+                                                #"ad_sampler": "DPM++ 2M",
+                                                #"ad_scheduler": "Use same scheduler",
+                                                "ad_steps": 28,
+                                                #"ad_tab_enable": True,
+                                                #"ad_use_cfg_scale": False,
+                                                #"ad_use_checkpoint": False,
+                                                #"ad_use_clip_skip": False,
+                                                #"ad_use_inpaint_width_height": False,
+                                                #"ad_use_noise_multiplier": False,
+                                                #"ad_use_sampler": False,
+                                                #"ad_use_steps": False,
+                                                #"ad_use_vae": False,
+                                                #"ad_vae": "Use same VAE",
+                                                #"ad_x_offset": 0,
+                                                #"ad_y_offset": 0,
+                                                #"is_api": []
+                                            }
+                                        ]
+                                    },
+                                    "Soft Inpainting": {
+                                            "args": [
+                                                True,
+                                                1,
+                                                0.5,
+                                                4,
+                                                0,
+                                                0.5,
+                                                2
+                                        ]
+                                    }
                                 }
                             }
-                        }
 
-                        adetailer_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=adetailer_payload, timeout=1200)
+                            adetailer_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=adetailer_payload, timeout=1200)
 
-                        if adetailer_response.status_code == 200:
-                            for chunk in adetailer_response.iter_content(chunk_size=8192):
+                            if adetailer_response.status_code == 200:
+                                for chunk in adetailer_response.iter_content(chunk_size=8192):
+                                    
+                                    # 必要に応じてチャンクを処理
+                                    st.write(chunk)
                                 
-                                # 必要に応じてチャンクを処理
-                                st.write(chunk)
-                            
-                            # 全てのチャンクを受け取った後にJSONをパース
-                            ad_result = adetailer_response.json()
+                                # 全てのチャンクを受け取った後にJSONをパース
+                                ad_result = adetailer_response.json()
 
-                            # 生成された画像を取得
-                            ad_result = adetailer_response.json() #['images']
-                            
-                            # 生成した完成画像変数を定義
-                            last_generated_images = ad_result['images']
-
-                            # 完成画像の保存先ディレクトリのパスを定義
-                            save_dir = '/tmp'
-
-                            #####---> Streamlit Clour(Linux Server)
-                            # home_dir = os.path.expanduser('~') 
-                            # save_dir_outputs = os.path.join(home_dir, 'tmp', 'outputs')
-                            # save_dir_outputs = 'tmp/outputs'
-
-                            #####---> Windwos Local
-                            # save_dir_outputs = 'c:/tmp/outputs'
-
-                            #####---> Mac Local or Linux Local
-                            # ホームディレクトリを取得してから定義
-                            # home_dir = os.path.expanduser('~') 
-                            # save_dir_putputs = os.path.join(home_dir, 'tmp', 'outputs')
-
-                            # ディレクトリが存在しない場合は作成
-                            # os.makedirs(save_dir, exist_ok=True)
-
-                            # '/tmp/outputs内のファイル数をカウント
-                            file_count = sum(os.path.isfile(os.path.join(save_dir, name)) for name in os.listdir(save_dir))
-                            
-                            # ファイル名に追加する連番
-                            renban = f"{file_count + 1 - 1:0{seq_digit}}"
-
-                            # 完成画像のファイル名
-                            ad_image_name = renban + '-compimg.png'
-                            ad_full_path = os.path.join(save_dir, ad_image_name)
-
-                            try:
-                                with open(ad_full_path, 'wb') as f:
-                                    f.write(base64.b64decode(last_generated_images[0]))
-                            except Exception as e:
-                                st.error(f"画像の保存に失敗しました。 {e}")
-
-                            # 画像を表示
-                            st.image(ad_full_path, caption=ad_image_name, use_column_width=True)
-
-                            # ダウンロードリンクを作成
-                            def get_image_download_link(ad_full_path, ad_image_name):
-                                with open(ad_full_path, "rb") as file:
-                                    img_bytes = file.read()
-                                b64 = base64.b64encode(img_bytes).decode()
-                                href = f'<a href="data:file/png;base64,{b64}" download="{ad_image_name}">📥 Download Image</a>'
-                                return href
-
-                            # ダウンロードリンクを表示
-                            download_link = get_image_download_link(ad_full_path, "downloaded_image.png")
-                            st.markdown(download_link, unsafe_allow_html=True)
-
-                            # さらにbase64でエンコードされた画像を表示
-                            #with open(ad_full_path, "rb") as f:
-                            #    img_base64 = base64.b64encode(f.read()).decode("utf-8")
+                                # 生成された画像を取得
+                                ad_result = adetailer_response.json() #['images']
                                 
-                            #    st.markdown(
-                            #        f'<img src="data:image/png;base64,{img_base64}" alt="Generated Image" />',
-                            #        unsafe_allow_html=True
-                            #    )
+                                # 生成した完成画像変数を定義
+                                last_generated_images = ad_result['images']
 
-                        #else:
-                        #    st.error(f"Adetailer failed: {adetailer_response.text}")
+                                # 完成画像の保存先ディレクトリのパスを定義
+                                save_dir = '/tmp'
 
-                        k += 1
+                                #####---> Streamlit Clour(Linux Server)
+                                # home_dir = os.path.expanduser('~') 
+                                # save_dir_outputs = os.path.join(home_dir, 'tmp', 'outputs')
+                                # save_dir_outputs = 'tmp/outputs'
+
+                                #####---> Windwos Local
+                                # save_dir_outputs = 'c:/tmp/outputs'
+
+                                #####---> Mac Local or Linux Local
+                                # ホームディレクトリを取得してから定義
+                                # home_dir = os.path.expanduser('~') 
+                                # save_dir_putputs = os.path.join(home_dir, 'tmp', 'outputs')
+
+                                # ディレクトリが存在しない場合は作成
+                                # os.makedirs(save_dir, exist_ok=True)
+
+                                # '/tmp/outputs内のファイル数をカウント
+                                file_count = sum(os.path.isfile(os.path.join(save_dir, name)) for name in os.listdir(save_dir))
+                                
+                                # ファイル名に追加する連番
+                                renban = f"{file_count + 1 - 1:0{seq_digit}}"
+
+                                # 完成画像のファイル名
+                                ad_image_name = renban + '-compimg.png'
+                                ad_full_path = os.path.join(save_dir, ad_image_name)
+
+                                try:
+                                    with open(ad_full_path, 'wb') as f:
+                                        f.write(base64.b64decode(last_generated_images[0]))
+                                except Exception as e:
+                                    st.error(f"画像の保存に失敗しました。 {e}")
+
+                                # 画像を表示
+                                st.image(ad_full_path, caption=ad_image_name, use_column_width=True)
+
+                                # ダウンロードリンクを作成
+                                def get_image_download_link(ad_full_path, ad_image_name):
+                                    with open(ad_full_path, "rb") as file:
+                                        img_bytes = file.read()
+                                    b64 = base64.b64encode(img_bytes).decode()
+                                    href = f'<a href="data:file/png;base64,{b64}" download="{ad_image_name}">📥 Download Image</a>'
+                                    return href
+
+                                # ダウンロードリンクを表示
+                                download_link = get_image_download_link(ad_full_path, "downloaded_image.png")
+                                st.markdown(download_link, unsafe_allow_html=True)
+
+                                # さらにbase64でエンコードされた画像を表示
+                                #with open(ad_full_path, "rb") as f:
+                                #    img_base64 = base64.b64encode(f.read()).decode("utf-8")
+                                    
+                                #    st.markdown(
+                                #        f'<img src="data:image/png;base64,{img_base64}" alt="Generated Image" />',
+                                #        unsafe_allow_html=True
+                                #    )
+
+                            #else:
+                            #    st.error(f"Adetailer failed: {adetailer_response.text}")
+
+                            k += 1
 
                 st.success("全ての処理が終了しました。")
                     
