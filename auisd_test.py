@@ -448,7 +448,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
         if response.status_code == 200:
 
-            st.write(f"{j + 1}枚目の標準画像を生成中です。") 
+            st.write(f"{i + 1}枚目の標準画像を生成中です。") 
 
             # 生成された画像を取得
             result = response.json()
@@ -493,6 +493,8 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
         st.write(f"セッションステートから受け取った保存ディレクトリ： {save_dir}")
 
         if 'api_url' in st.session_state:
+
+            j = 0
 
             for j in range(2):
 
@@ -701,6 +703,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
         if 'api_url' in st.session_state:
 
             seq_digit = 5
+            k = 0
             
             # 画像の保存パスを定義
             # st.session_state['save_dir'] = save_dir
