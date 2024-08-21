@@ -355,7 +355,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
     for i in range(2):
         
         payload = {
-            #"batch_size" :1,
+            "batch_size" :1,
             "cfg_scale": 1.5,
             "denoising_strength": 0.75,
             "height": height1,  #読み込んだ高さを使用
@@ -519,7 +519,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     "script_args": [
                         "<p style=\"margin-bottom:0.75em\">Will upscale the image by the selected scale factor; use width and height sliders to set tile size</p>",
                         64,
-                        3, #--- 【注意】APIで SwinIR 4x が動作せず（要検証）
+                        3, #--- 4x-UltraSharp【注意】APIで SwinIR 4x が動作せず（要検証）
                         1.8
                     ],
                     "script_name": "sd upscale",
@@ -604,6 +604,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                             f.write(base64.b64decode(hires_generated_images[0]))
                     except Exception as e:
                         st.error(f"画像の保存に失敗しました。 {e}") 
+                        #st.stop()
                         
                 else:
                     st.error(f"タイムアウトを受信しましたが生成処理を継続します。 {upscale_response.text}")
@@ -619,7 +620,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
         else:
             st.write(f"{save_dir} does not exist.")
 
-        st.stop()
+        # st.stop()
 
 ################################################################################
 #   ADtetailerで顔を修正して完成画像を保存
