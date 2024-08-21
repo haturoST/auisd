@@ -355,8 +355,6 @@ with st.container():
 
                 for i in range(2):
                     
-                    st.write(f"{i + 1}枚目の標準画像を生成中です。") 
-
                     payload = {
                         "batch_size" :1,
                         "cfg_scale": 1.5,
@@ -592,34 +590,43 @@ with st.container():
                                     }
                             }
 
-                            upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=1200)
+                            upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=1200, stream=True)
 
-                            # if upscale_response.status_code == 200:
+                            if upscale_response.status_code == 200:
 
-                            st.write(f"{j}枚目の高解像度化画像の情報を受け取っています。")
+                                for chunk in upscale_response.iter_content(chunk_size=8192):
+                                
+                                    # 必要に応じてチャンクを処理
+                                    st.write(chunk)
+                                    time.sleep(5)
+                                
+                                # 全てのチャンクを受け取った後にJSONをパース
+                                hires_result = upscale_response.json()
 
-                            # 生成された画像を取得
-                            hires_result = upscale_response.json()
+                                st.write(f"{j}枚目の高解像度化画像の情報を受け取っています。")
 
-                            # 生成した高解像度化画像変数を定義 
-                            hires_generated_images = hires_result['images']
+                                # 生成された画像を取得
+                                hires_result = upscale_response.json()
 
-                            # 保存先のパス
-                            save_dir0 = "/tmp"
-                            # st.write(f"直接記述した保存ディレクトリ: {save_dir}")
-                            # save_dir = st.session_state['save_dir']
+                                # 生成した高解像度化画像変数を定義 
+                                hires_generated_images = hires_result['images']
 
-                            # 画像の保存処理
-                            hires_image_name = f"hires_output{j}.png"
-                            hires_full_path = os.path.join(save_dir0, hires_image_name)
-                            st.write(hires_full_path)
+                                # 保存先のパス
+                                save_dir0 = "/tmp"
+                                # st.write(f"直接記述した保存ディレクトリ: {save_dir}")
+                                # save_dir = st.session_state['save_dir']
 
-                            try:
-                                with open(hires_full_path, 'wb') as f:
-                                    f.write(base64.b64decode(hires_generated_images[0]))
-                            except Exception as e:
-                                st.error(f"画像の保存に失敗しました。 {e}") 
-                                st.stop()
+                                # 画像の保存処理
+                                hires_image_name = f"hires_output{j}.png"
+                                hires_full_path = os.path.join(save_dir0, hires_image_name)
+                                st.write(hires_full_path)
+
+                                try:
+                                    with open(hires_full_path, 'wb') as f:
+                                        f.write(base64.b64decode(hires_generated_images[0]))
+                                except Exception as e:
+                                    st.error(f"画像の保存に失敗しました。 {e}") 
+                                    st.stop()
                                 
                             else:
                                 # st.error(f"画像情報: {hires_result}")
@@ -745,74 +752,82 @@ with st.container():
 
                         adetailer_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=adetailer_payload, timeout=1200)
 
-                        # if adetailer_response.status_code == 200:
-
-                        # 生成された画像を取得
-                        ad_result = adetailer_response.json() #['images']
-                        
-                        # 生成した完成画像変数を定義
-                        last_generated_images = ad_result['images']
-
-                        # 完成画像の保存先ディレクトリのパスを定義
-
-                        #####---> Streamlit Clour(Linux Server)
-                        home_dir = os.path.expanduser('~') 
-                        save_dir_outputs = os.path.join(home_dir, 'tmp', 'outputs')
-                        # save_dir_outputs = 'tmp/outputs'
-
-                        #####---> Windwos Local
-                        # save_dir_outputs = 'c:/tmp/outputs'
-
-                        #####---> Mac Local or Linux Local
-                        # ホームディレクトリを取得してから定義
-                        # home_dir = os.path.expanduser('~') 
-                        # save_dir_putputs = os.path.join(home_dir, 'tmp', 'outputs')
-
-                        # ディレクトリが存在しない場合は作成
-                        os.makedirs(save_dir_outputs, exist_ok=True)
-
-                        # '/tmp/outputs内のファイル数をカウント
-                        file_count = sum(os.path.isfile(os.path.join(save_dir_outputs, name)) for name in os.listdir(save_dir_outputs))
-                        
-                        # ファイル名に追加する連番
-                        renban = f"{file_count + 1 - 1:0{seq_digit}}"
-
-                        # 完成画像のファイル名
-                        ad_image_name = renban + '-compimg.png'
-                        ad_full_path = os.path.join(save_dir_outputs, ad_image_name)
-
-                        try:
-                            with open(ad_full_path, 'wb') as f:
-                                f.write(base64.b64decode(last_generated_images[0]))
-                        except Exception as e:
-                            st.error(f"画像の保存に失敗しました。 {e}")
-
-                        # 画像を表示
-                        st.image(ad_full_path, caption=ad_image_name, use_column_width=True)
-
-                        # ダウンロードリンクを作成
-                        def get_image_download_link(ad_full_path, ad_image_name):
-                            with open(ad_full_path, "rb") as file:
-                                img_bytes = file.read()
-                            b64 = base64.b64encode(img_bytes).decode()
-                            href = f'<a href="data:file/png;base64,{b64}" download="{ad_image_name}">📥 Download Image</a>'
-                            return href
-
-                        # ダウンロードリンクを表示
-                        download_link = get_image_download_link(ad_full_path, "downloaded_image.png")
-                        st.markdown(download_link, unsafe_allow_html=True)
-
-                        # さらにbase64でエンコードされた画像を表示
-                        #with open(ad_full_path, "rb") as f:
-                        #    img_base64 = base64.b64encode(f.read()).decode("utf-8")
+                        if adetailer_response.status_code == 200:
+                            for chunk in adetailer_response.iter_content(chunk_size=8192):
+                                
+                                # 必要に応じてチャンクを処理
+                                st.write(chunk)
+                                time.sleep(5)
                             
-                        #    st.markdown(
-                        #        f'<img src="data:image/png;base64,{img_base64}" alt="Generated Image" />',
-                        #        unsafe_allow_html=True
-                        #    )
+                            # 全てのチャンクを受け取った後にJSONをパース
+                            ad_result = adetailer_response.json()
 
-                    #else:
-                    #    st.error(f"Adetailer failed: {adetailer_response.text}")
+                            # 生成された画像を取得
+                            ad_result = adetailer_response.json() #['images']
+                            
+                            # 生成した完成画像変数を定義
+                            last_generated_images = ad_result['images']
+
+                            # 完成画像の保存先ディレクトリのパスを定義
+
+                            #####---> Streamlit Clour(Linux Server)
+                            home_dir = os.path.expanduser('~') 
+                            save_dir_outputs = os.path.join(home_dir, 'tmp', 'outputs')
+                            # save_dir_outputs = 'tmp/outputs'
+
+                            #####---> Windwos Local
+                            # save_dir_outputs = 'c:/tmp/outputs'
+
+                            #####---> Mac Local or Linux Local
+                            # ホームディレクトリを取得してから定義
+                            # home_dir = os.path.expanduser('~') 
+                            # save_dir_putputs = os.path.join(home_dir, 'tmp', 'outputs')
+
+                            # ディレクトリが存在しない場合は作成
+                            os.makedirs(save_dir_outputs, exist_ok=True)
+
+                            # '/tmp/outputs内のファイル数をカウント
+                            file_count = sum(os.path.isfile(os.path.join(save_dir_outputs, name)) for name in os.listdir(save_dir_outputs))
+                            
+                            # ファイル名に追加する連番
+                            renban = f"{file_count + 1 - 1:0{seq_digit}}"
+
+                            # 完成画像のファイル名
+                            ad_image_name = renban + '-compimg.png'
+                            ad_full_path = os.path.join(save_dir_outputs, ad_image_name)
+
+                            try:
+                                with open(ad_full_path, 'wb') as f:
+                                    f.write(base64.b64decode(last_generated_images[0]))
+                            except Exception as e:
+                                st.error(f"画像の保存に失敗しました。 {e}")
+
+                            # 画像を表示
+                            st.image(ad_full_path, caption=ad_image_name, use_column_width=True)
+
+                            # ダウンロードリンクを作成
+                            def get_image_download_link(ad_full_path, ad_image_name):
+                                with open(ad_full_path, "rb") as file:
+                                    img_bytes = file.read()
+                                b64 = base64.b64encode(img_bytes).decode()
+                                href = f'<a href="data:file/png;base64,{b64}" download="{ad_image_name}">📥 Download Image</a>'
+                                return href
+
+                            # ダウンロードリンクを表示
+                            download_link = get_image_download_link(ad_full_path, "downloaded_image.png")
+                            st.markdown(download_link, unsafe_allow_html=True)
+
+                            # さらにbase64でエンコードされた画像を表示
+                            #with open(ad_full_path, "rb") as f:
+                            #    img_base64 = base64.b64encode(f.read()).decode("utf-8")
+                                
+                            #    st.markdown(
+                            #        f'<img src="data:image/png;base64,{img_base64}" alt="Generated Image" />',
+                            #        unsafe_allow_html=True
+                            #    )
+
+                        #else:
+                        #    st.error(f"Adetailer failed: {adetailer_response.text}")
 
                         k += 1
 
