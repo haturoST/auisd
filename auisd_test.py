@@ -482,6 +482,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
         # 画像の保存パス 
         save_dir = st.session_state['save_dir']
+        st.write(f"セッションステートから受け取った保存ディレクトリ： {save_dir}")
 
         if 'api_url' in st.session_state:
 
@@ -592,6 +593,8 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     hires_generated_images = hires_result['images']
 
                     # 保存先のパス
+                    save_dir = "/tmp"
+                    st.write(f"直接記述した保存ディレクトリ: {save_dir}")
                     # save_dir = st.session_state['save_dir']
 
                     # 画像の保存処理
@@ -607,7 +610,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                         #st.stop()
                         
                 else:
-                    st.error(f"タイムアウトを受信しましたが生成処理を継続します。 {upscale_response.text}")
+                    st.error(f"タイムアウトを受信しました。再度画像を生成してください。 {upscale_response.text}")
 
             j += 1
 
