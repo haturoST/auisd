@@ -354,6 +354,8 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
     for i in range(2):
         
+        st.write(f"iの値：{i}") 
+
         payload = {
             "batch_size" :1,
             "cfg_scale": 1.5,
@@ -611,7 +613,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                         
                 else:
                     # st.error(f"画像情報: {hires_result}")
-                    st.error(f"hires画像のフルパス: {hires_full_path}")
+                    # st.error(f"hires画像のフルパス: {hires_full_path}")
                     st.error(f"タイムアウトを受信しました。再度画像を生成してください。 {upscale_response.text}")
 
             j += 1
