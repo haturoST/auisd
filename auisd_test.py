@@ -354,7 +354,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
     for i in range(2):
         
-        st.write(f"iの値：{i}") 
+        st.write(f"{i}枚目の標準画像を生成中です。") 
 
         payload = {
             "batch_size" :1,
@@ -462,6 +462,9 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     f.write(base64.b64decode(generated_images[0]))
             except Exception as e:
                 st.error(f"画像の保存に失敗しました。 {e}")  
+            
+            # 画像を表示
+            st.image(full_path, caption="元画像", use_column_width=True)
         
         else:
             st.error(f"タイムアウトにより、リクエストが失敗しました。再度、画像を生成してくだい。: {response.status_code}")
@@ -587,6 +590,8 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                 upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=600)
 
                 if upscale_response.status_code == 200:
+
+                    st.write(f"{j}枚目の高解像度化画像の情報を受け取っています。")
                     
                     # 生成された画像を取得
                     hires_result = upscale_response.json()
