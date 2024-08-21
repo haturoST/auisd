@@ -511,7 +511,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     "script_args": [
                         "<p style=\"margin-bottom:0.75em\">Will upscale the image by the selected scale factor; use width and height sliders to set tile size</p>",
                         64,
-                        "R-ESRGAN 4x+", #--- 【注意】APIで SwinIR 4x が動作せず（要検証）
+                        "4x-UltraSharp", #--- 【注意】APIで SwinIR 4x が動作せず（要検証）
                         1.8
                     ],
                     "script_name": "sd upscale",
