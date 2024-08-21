@@ -509,10 +509,10 @@ with st.container():
                             hiresImage = (image_b64)
 
                             # Payloadにそれぞれの画像パスを含める
-                            files = {
-                                "hiresImage0": open(save_dir + '/output0.png', "rb"),
-                                "hiresImage1": open(save_dir + '/output1.png', "rb"),
-                            }
+                            #files = {
+                            #    "hiresImage0": open(save_dir + '/output0.png', "rb"),
+                            #    "hiresImage1": open(save_dir + '/output1.png', "rb"),
+                            #}
 
                             upscale_payload = {
                                 "batch_size": 1,
@@ -589,6 +589,8 @@ with st.container():
                                         }
                                     }
                             }
+
+                            st.write("リクエスト内容を確認")
 
                             upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=1200, stream=True)
                             time.sleep(10)
