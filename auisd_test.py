@@ -495,8 +495,8 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
                 # Payloadにそれぞれの画像パスを含める
                 files = {
-                    "hiresImage0": open(save_dir + 'output0.png', "rb"),
-                    "hiresImage1": open(save_dir + 'output1.png', "rb"),
+                    "hiresImage0": open(save_dir + '/output0.png', "rb"),
+                    "hiresImage1": open(save_dir + '/output1.png', "rb"),
                 }
 
                 upscale_payload = {
