@@ -350,6 +350,8 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
     with open(img3_path, "rb") as f:
         img3_base64 = base64.b64encode(f.read()).decode('utf-8')
 
+    i = 0
+
     for i in range(2):
         
         payload = {
@@ -624,7 +626,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
             seq_digit = 5
             
             # 画像の保存パスを定義
-            st.session_state['save_dir'] = save_dir
+            # st.session_state['save_dir'] = save_dir
 
             for k in range(2):
 
