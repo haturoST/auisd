@@ -223,23 +223,32 @@ with col3:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-################################################################################
+
+##### プロンプト選択エリア #######################################################
+
 # プロンプトとネガティブプロンプトを定義
 ################################################################################
 
 st.markdown('<p style="font-size:18px;color:#00ffff;">手順3：画像の背景を選択してください。</P>', unsafe_allow_html=True)
 
 # 室内のプロンプト
-myprompt_room = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, indoors, white wall, white ceiling, white floor, white background, Hand, detailed, perfect, perfection, <lora:hand 4:0.31>"
+myprompt_room = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, indoors, white wall, white ceiling, white floor, white background, Hand, detailed, perfect, perfection,>"
+# <lora:hand 4:0.31>"
 
 # 屋外（街中）のプロンプト
-myprompt_street = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, street, Hand, detailed, perfect, perfection, <lora:hand 4:0.31>"
+myprompt_street = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, street, Hand, detailed, perfect, perfection,>"
+# <lora:hand 4:0.31>"
 
 # 屋外（公園）のプロンプト
-myprompt_cafe = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, cafe, Hand, detailed, perfect, perfection, <lora:hand 4:0.31>"
+myprompt_cafe = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, cafe, Hand, detailed, perfect, perfection,>"
+# <lora:hand 4:0.31>"
 
 # ネガティブプロンプト
-mynegativeprompt = "bad hand, bad fingers, clothes, from behind, gloves, arm cover, long sleeves, sandals"
+mynegativeprompt0 = "bad hand, bad fingers, clothes, from behind, gloves, arm cover, long sleeves, sandals"
+
+mynegativeprompt = "(worst quality, low quality, illustration, 3d, 2d, painting, cartoons, sketch),bad hands, too many fingers, fused fingers, mutated hands and fingers, malformed hands,extra legs, missing fingers, oorly drawn hands, mutated hands, malformed limbs, missing limb, floating limbs, disconnected limbs, bad feet, long body, bad body ,extra arms, extra limb, pubic hair, text,disfigured, mutated, deformed, long neck, clothes, from behind, gloves, arm cover, long sleeves, sandals,"
+
+################################################################################
 
 # ラジオボタンを作成
 # プロンプトラジオボタンを定義
@@ -778,5 +787,5 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
                 k += 1
 
-        st.success("全ての処理が終了しました。") ################################################################################################
+        st.success("全ての処理が終了しました。")
         
