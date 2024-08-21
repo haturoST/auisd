@@ -355,7 +355,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
     for i in range(2):
         
         payload = {
-            #"batch_size" :2,
+            #"batch_size" :1,
             "cfg_scale": 1.5,
             "denoising_strength": 0.75,
             "height": height1,  #読み込んだ高さを使用
@@ -447,6 +447,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
             # 生成された画像を取得
             result = response.json()
+
             # 生成した標準画像変数を定義
             generated_images = result['images']  # ここで正しく変数を定義
 
@@ -478,6 +479,9 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 ################################################################################
 
     if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
+
+        # 画像の保存パス 
+        save_dir = st.session_state['save_dir']
 
         if 'api_url' in st.session_state:
 
@@ -577,7 +581,7 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                         }
                 }
 
-                upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=300)
+                upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=1000)
 
                 if upscale_response.status_code == 200:
                     
@@ -588,23 +592,12 @@ if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
                     hires_generated_images = hires_result['images']
 
                     # 保存先のパス
-                    #save_dir = st.session_state['save_dir']
-
-                    #####---> Streamlit Clour(Linux Server)
-                    #save_dir = 'tmp'
-
-                    #####---> Windwos Local
-                    # save_dir_outputs = 'c:/tmp'
-
-                    #####---> Mac Local or Linux Local
-                    # ホームディレクトリを取得してから定義
-                    # home_dir = os.path.expanduser('~') 
-                    # save_dir = os.path.join(home_dir, 'tmp')
+                    # save_dir = st.session_state['save_dir']
 
                     # 画像の保存処理
                     hires_image_name = f"hires_output{j}.png"
                     hires_full_path = os.path.join(save_dir, hires_image_name)
-                    st.success(hires_full_path)
+                    st.write(hires_full_path)
                     
                     try:
                         with open(hires_full_path, 'wb') as f:
