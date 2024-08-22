@@ -41,6 +41,9 @@ st.session_state['save_dir'] = save_dir
 #   Session Stateを初期化
 ###################################################################
 
+if 'api_url' not in st.session_state:
+    st.session_state['api_url'] = None
+
 if 'width1' not in st.session_state:
     st.session_state['width1'] = None
     st.session_state['height1'] = None
@@ -528,6 +531,7 @@ with st.container():
                 "hiresImage1": open(save_dir + '/output1.png', "rb"),
             }
 
+            api_url = st.session_state['api_url']
             height1 = st.session_state['height1']
             width1 = st.session_state['width1']
 
