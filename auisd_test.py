@@ -36,6 +36,20 @@ st.session_state['save_dir'] = save_dir
 # ディレクトリが存在しない場合は作成
 # os.makedirs(save_dir, exist_ok=True)
 
+
+###################################################################
+#   Session Stateを初期化
+###################################################################
+
+if 'width1' not in st.session_state:
+    st.session_state['width1'] = None
+    st.session_state['height1'] = None
+
+if 'width2' not in st.session_state:
+    st.session_state['width2'] = None
+    st.session_state['height2'] = None
+
+
 ###################################################################
 #   StreamlitでUIを作成
 ###################################################################
