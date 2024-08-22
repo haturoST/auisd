@@ -514,7 +514,7 @@ with st.container():
                 "hiresImage1": open(save_dir + '/output1.png', "rb"),
             }
 
-            "height1" = st.session_state['height1']
+            height1 = st.session_state['height1']
 
             upscale_payload = {
                 "batch_size": 1,
