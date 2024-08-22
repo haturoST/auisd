@@ -465,7 +465,11 @@ with st.container():
                         try:
                             with open(full_path, 'wb') as f:
                                 f.write(base64.b64decode(generated_images[0]))
-                                st.write(f"{i+1}枚目の標準画像生成が終了しました。")
+                                st.write(f"{i+1}枚目の標準画像を生成しました。")
+
+                                # 画像を表示
+                                st.image(full_path, caption=image_name, use_column_width=True)
+
                                 i += 1
 
                         except Exception as e:
