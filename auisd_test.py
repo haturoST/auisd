@@ -529,6 +529,7 @@ with st.container():
             }
 
             height1 = st.session_state['height1']
+            width1 = st.session_state['width1']
 
             upscale_payload = {
                 "batch_size": 1,
