@@ -7,7 +7,6 @@ import mimetypes
 import io
 import os
 import sys
-import datetime
 
 # Add the project's root directory to the system path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -514,6 +513,8 @@ with st.container():
                 "hiresImage0": open(save_dir + '/output0.png', "rb"),
                 "hiresImage1": open(save_dir + '/output1.png', "rb"),
             }
+
+            "height1" = st.session_state['height1']
 
             upscale_payload = {
                 "batch_size": 1,
