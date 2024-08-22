@@ -119,7 +119,7 @@ api_url_tmp = st.text_input("https://~~~.gradio.live　※http: //0.0.0.0：7860
 
 # 入力フィールドが空の場合、警告を表示して処理を中断
 if not api_url_tmp:
-    st.warning("Gradio.live API URL is required to proceed.")
+    # st.warning("Gradio.live API URL is required to proceed.")
     st.stop()
 
 # urlの末尾に'/'がある場合は削除
