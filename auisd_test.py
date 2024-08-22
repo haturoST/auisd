@@ -485,175 +485,175 @@ with st.container():
                 st.write("標準画像の生成が完了しました。高解像度化処理を開始します。")
 
 
-            ################################################################################
-            # #   img2img + Tile + R-ESRGAN 4x+ で高解像度化
-            ################################################################################
+        ################################################################################
+        # #   img2img + Tile + R-ESRGAN 4x+ で高解像度化
+        ################################################################################
 
-                if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
+            #if uploaded_file1 and uploaded_file2 and uploaded_file3 is not None:
 
-                    # 画像の保存パス 
-                    # save_dir = st.session_state['save_dir']
-                    # st.write(f"セッションステートから受け取った保存ディレクトリ： {save_dir}")
+                # 画像の保存パス 
+                # save_dir = st.session_state['save_dir']
+                # st.write(f"セッションステートから受け取った保存ディレクトリ： {save_dir}")
 
-                    if 'api_url' in st.session_state:
+                if 'api_url' in st.session_state:
 
-                        j = 0
+                    j = 0
 
-                        for j in range(2):
+                    for j in range(2):
 
-                            # 高解像度化用画像の定義
-                            hiresImage= []
+                        # 高解像度化用画像の定義
+                        hiresImage= []
 
-                            imgFilename = save_dir + '/output' + str(j) + '.png'
-                            src_img = Image.open(imgFilename)
-                            img_bytes = io.BytesIO()
-                            src_img.save(img_bytes, format='png')
-                            image_b64 = base64.b64encode(img_bytes.getvalue()).decode('utf-8')
-                            img_bytes.close()
-                            src_img.close()
-                            hiresImage = (image_b64)
+                        imgFilename = save_dir + '/output' + str(j) + '.png'
+                        src_img = Image.open(imgFilename)
+                        img_bytes = io.BytesIO()
+                        src_img.save(img_bytes, format='png')
+                        image_b64 = base64.b64encode(img_bytes.getvalue()).decode('utf-8')
+                        img_bytes.close()
+                        src_img.close()
+                        hiresImage = (image_b64)
 
-                            # Payloadにそれぞれの画像パスを含める
-                            files = {
-                                "hiresImage0": open(save_dir + '/output0.png', "rb"),
-                                "hiresImage1": open(save_dir + '/output1.png', "rb"),
-                            }
+                        # Payloadにそれぞれの画像パスを含める
+                        files = {
+                            "hiresImage0": open(save_dir + '/output0.png', "rb"),
+                            "hiresImage1": open(save_dir + '/output1.png', "rb"),
+                        }
 
-                            upscale_payload = {
-                                "batch_size": 1,
-                                "cfg_scale": 2,
-                                "denoising_strength": 0.4,
-                                "height": height1,
-                                "init_images": [hiresImage], #--- 高解像度化する画像 output.png を指定
-                                "n": 2,
-                                "negative_prompt": mynegativeprompt,
-                                "prompt": myprompt,
-                                "sampler_name": "DPM++ SDE",
-                                "scheduler": "Karass",
-                                "script_args": [
-                                    "<p style=\"margin-bottom:0.75em\">Will upscale the image by the selected scale factor; use width and height sliders to set tile size</p>",
-                                    64,
-                                    8, #--- 4x-UltraSharp【注意】APIで SwinIR 4x が動作せず（要検証）
-                                    1.5
-                                ],
-                                "script_name": "sd upscale",
-                                "seed": -1,
-                                "steps": 12,
-                                "width": width1,
-                                "alwayson_scripts": {
-                                    "ControlNet": {     #--- tile を適用
+                        upscale_payload = {
+                            "batch_size": 1,
+                            "cfg_scale": 2,
+                            "denoising_strength": 0.4,
+                            "height": height1,
+                            "init_images": [hiresImage], #--- 高解像度化する画像 output.png を指定
+                            "n": 2,
+                            "negative_prompt": mynegativeprompt,
+                            "prompt": myprompt,
+                            "sampler_name": "DPM++ SDE",
+                            "scheduler": "Karass",
+                            "script_args": [
+                                "<p style=\"margin-bottom:0.75em\">Will upscale the image by the selected scale factor; use width and height sliders to set tile size</p>",
+                                64,
+                                "R-ESRGAN 4x+", #--- 【注意】APIで 4x-UltraSharp、SwinIR 4x が動作せず（要検証）
+                                1.5
+                            ],
+                            "script_name": "sd upscale",
+                            "seed": -1,
+                            "steps": 12,
+                            "width": width1,
+                            "alwayson_scripts": {
+                                "ControlNet": {     #--- tile を適用
+                                    "args": [
+                                        {
+                                            #"advanced_weighting": None,
+                                            #"animatediff_batch": False,
+                                            #"batch_image_files": [],
+                                            #"batch_images": "",
+                                            #"batch_keyframe_idx": None,
+                                            #"batch_mask_dir": None,
+                                            #"batch_modifiers": [],
+                                            "control_mode": "Balanced",
+                                            #"effective_region_mask": None,
+                                            "enabled": True,
+                                            "guidance_end": 1.0,
+                                            "guidance_start": 0.0,
+                                            "hr_option": "Both",
+                                            "image": None,
+                                            "inpaint_crop_input_image": False,
+                                            "input_mode": "simple",
+                                            #"ipadapter_input": None,
+                                            "is_ui": True,
+                                            #"loopback": False,
+                                            "low_vram": False,
+                                            "mask": None,
+                                            "model": "sdxl_tile",
+                                            "module": "tile_resample",
+                                            #"output_dir": "",
+                                            "pixel_perfect": True,
+                                            "processor_res": 768,
+                                            "pulid_mode": "Fidelity",
+                                            "resize_mode": "Crop and Resize",
+                                            #"save_detected_map": True,
+                                            "threshold_a": 1.0,
+                                            "threshold_b": 0.5,
+                                            "union_control_type": "Tile",
+                                            "weight": 1.0
+                                        },
+
+                                    ]
+                                },
+                                "Soft Inpainting": {
                                         "args": [
-                                            {
-                                                #"advanced_weighting": None,
-                                                #"animatediff_batch": False,
-                                                #"batch_image_files": [],
-                                                #"batch_images": "",
-                                                #"batch_keyframe_idx": None,
-                                                #"batch_mask_dir": None,
-                                                #"batch_modifiers": [],
-                                                "control_mode": "Balanced",
-                                                #"effective_region_mask": None,
-                                                "enabled": True,
-                                                "guidance_end": 1.0,
-                                                "guidance_start": 0.0,
-                                                "hr_option": "Both",
-                                                "image": None,
-                                                "inpaint_crop_input_image": False,
-                                                "input_mode": "simple",
-                                                #"ipadapter_input": None,
-                                                "is_ui": True,
-                                                #"loopback": False,
-                                                "low_vram": False,
-                                                "mask": None,
-                                                "model": "sdxl_tile",
-                                                "module": "tile_resample",
-                                                #"output_dir": "",
-                                                "pixel_perfect": True,
-                                                "processor_res": 768,
-                                                "pulid_mode": "Fidelity",
-                                                "resize_mode": "Crop and Resize",
-                                                #"save_detected_map": True,
-                                                "threshold_a": 1.0,
-                                                "threshold_b": 0.5,
-                                                "union_control_type": "Tile",
-                                                "weight": 1.0
-                                            },
-
-                                        ]
-                                    },
-                                    "Soft Inpainting": {
-                                            "args": [
-                                                True,
-                                                1,
-                                                0.5,
-                                                4,
-                                                0,
-                                                0.5,
-                                                2
-                                            ] 
-                                        }
+                                            True,
+                                            1,
+                                            0.5,
+                                            4,
+                                            0,
+                                            0.5,
+                                            2
+                                        ] 
                                     }
-                            }
+                                }
+                        }
 
-                            st.write("リクエスト内容を確認")
+                        st.write("リクエスト内容を確認")
 
-                            upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=1200, stream=True)
+                        upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=1200, stream=True)
 
-                            if upscale_response.status_code == 200:
+                        if upscale_response.status_code == 200:
 
-                                for chunk in upscale_response.iter_content(chunk_size=8192):
-                                
-                                    # 必要に応じてチャンクを処理
-                                    st.write(chunk)
-                                                                    
-                                # 全てのチャンクを受け取った後にJSONをパース
-                                hires_result = upscale_response.json()
+                            for chunk in upscale_response.iter_content(chunk_size=8192):
+                            
+                                # 必要に応じてチャンクを処理
+                                st.write(chunk)
+                                                                
+                            # 全てのチャンクを受け取った後にJSONをパース
+                            hires_result = upscale_response.json()
 
-                                st.write(f"{j}枚目の高解像度化画像の情報を受け取っています。")
+                            st.write(f"{j}枚目の高解像度化画像の情報を受け取っています。")
 
-                                # 生成された画像を取得
-                                hires_result = upscale_response.json()
+                            # 生成された画像を取得
+                            hires_result = upscale_response.json()
 
-                                # 生成した高解像度化画像変数を定義 
-                                hires_generated_images = hires_result['images']
+                            # 生成した高解像度化画像変数を定義 
+                            hires_generated_images = hires_result['images']
 
-                                # 保存先のパス
-                                save_dir = "/tmp"
-                                # st.write(f"直接記述した保存ディレクトリ: {save_dir}")
-                                # save_dir = st.session_state['save_dir']
+                            # 保存先のパス
+                            save_dir = "/tmp"
+                            # st.write(f"直接記述した保存ディレクトリ: {save_dir}")
+                            # save_dir = st.session_state['save_dir']
 
-                                # 画像の保存処理
-                                hires_image_name = f"hires_output{j}.png"
-                                hires_full_path = os.path.join(save_dir, hires_image_name)
-                                st.write(hires_full_path)
+                            # 画像の保存処理
+                            hires_image_name = f"hires_output{j}.png"
+                            hires_full_path = os.path.join(save_dir, hires_image_name)
+                            st.write(hires_full_path)
 
-                                try:
-                                    with open(hires_full_path, 'wb') as f:
-                                        f.write(base64.b64decode(hires_generated_images[0]))
-                                except Exception as e:
-                                    st.error(f"画像の保存に失敗しました。 {e}") 
-                                    st.stop()
-                                
-                            else:
-                                # st.error(f"画像情報: {hires_result}")
-                                #st.error(f"hires画像のフルパス: {hires_full_path}")
-                                st.error(f"タイムアウトを受信しました。再度画像を生成してください。 {upscale_response.text}")
-                                st.error(f"Request failed with status code {response.status_code}")
-                                st.error(response.text)
-                                st.error(f"画像生成に失敗しました。 {response.text}")
-
-                            j += 1
-
-                        # /tmp内にあるファイルを表示
-                        if os.path.exists(save_dir):
-                            files = os.listdir(save_dir)
-                            st.write(f"Contents of {save_dir}:")
-                            for file in files:
-                                st.write(file)
+                            try:
+                                with open(hires_full_path, 'wb') as f:
+                                    f.write(base64.b64decode(hires_generated_images[0]))
+                            except Exception as e:
+                                st.error(f"画像の保存に失敗しました。 {e}") 
+                                st.stop()
+                            
                         else:
-                            st.write(f"{save_dir} does not exist.")
+                            # st.error(f"画像情報: {hires_result}")
+                            #st.error(f"hires画像のフルパス: {hires_full_path}")
+                            st.error(f"タイムアウトを受信しました。再度画像を生成してください。 {upscale_response.text}")
+                            st.error(f"Request failed with status code {response.status_code}")
+                            st.error(response.text)
+                            st.error(f"画像生成に失敗しました。 {response.text}")
 
-                        # st.stop()
+                        j += 1
+
+                    # /tmp内にあるファイルを表示
+                    if os.path.exists(save_dir):
+                        files = os.listdir(save_dir)
+                        st.write(f"Contents of {save_dir}:")
+                        for file in files:
+                            st.write(file)
+                    else:
+                        st.write(f"{save_dir} does not exist.")
+
+                    # st.stop()
 
             ################################################################################
             #   ADtetailerで顔を修正して完成画像を保存
