@@ -117,6 +117,11 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.markdown('<p style="font-size:18px;color:#00ffff;">手順1：Stable Diffusion WebUIのURLを入力してください。</P>', unsafe_allow_html=True)
 api_url_tmp = st.text_input("https://~~~.gradio.live　※http: //0.0.0.0：7860ではありません。")
 
+# 入力フィールドが空の場合、警告を表示して処理を中断
+if not api_url_tmp:
+    st.warning("Gradio.live API URL is required to proceed.")
+    st.stop()
+
 # urlの末尾に'/'がある場合は削除
 api_url = api_url_tmp.rstrip("/")
 st.session_state['api_url'] = api_url
