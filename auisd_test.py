@@ -22,11 +22,12 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # home_dir = os.path.expanduser('~') 
 # save_dir = save_dir = os.path.join(home_dir, 'tmp')
 
-# save_dir = '/tmp'
+save_dir = '/tmp'
+save_dir_material = save_dir + '/materials'
 
 #####---> Windwos Local
-save_dir = 'c:/tmp'
-save_dir_material = save_dir + '/materials'
+# save_dir = 'c:/tmp'
+# save_dir_material = save_dir + '/materials'
 
 #####---> Mac Local or Linux Local
 # ホームディレクトリを取得してから定義
@@ -305,7 +306,7 @@ myprompt_cafe = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail },
 # <lora:hand 4:0.31>"
 
 # ネガティブプロンプト
-mynegativeprompt0 = "bad hand, bad fingers, clothes, from behind, gloves, arm cover, long sleeves, sandals"
+mynegativeprompt00 = "bad hand, bad fingers, clothes, from behind, gloves, arm cover, long sleeves, sandals"
 
 mynegativeprompt = "(worst quality, low quality, illustration, 3d, 2d, painting, cartoons, sketch),bad hands, too many fingers, fused fingers, mutated hands and fingers, malformed hands,extra legs, missing fingers, oorly drawn hands, mutated hands, malformed limbs, missing limb, floating limbs, disconnected limbs, bad feet, long body, bad body ,extra arms, extra limb, pubic hair, text,disfigured, mutated, deformed, long neck, clothes, from behind, gloves, arm cover, long sleeves, sandals,"
 
