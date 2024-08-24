@@ -40,7 +40,7 @@ st.session_state['save_dir'] = save_dir
 
 # ディレクトリが存在しない場合は作成
 os.makedirs(save_dir_material, exist_ok=True)
-os.makedirs(save_dir_material, exist_ok=True)
+os.makedirs(save_dir_temp, exist_ok=True)
 
 
 ###################################################################
