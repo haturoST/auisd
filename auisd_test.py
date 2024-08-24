@@ -571,7 +571,7 @@ if st.session_state['step'] == 2:
         # 高解像度化用画像の定義
         hiresImage= []
 
-        imgFilename = save_dir + '/output' + str(j+1) + '.png'
+        imgFilename = save_dir_temp + '/output' + str(j+1) + '.png'
         src_img = Image.open(imgFilename)
         img_bytes = io.BytesIO()
         src_img.save(img_bytes, format='png')
