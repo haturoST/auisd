@@ -24,6 +24,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 save_dir = '/tmp'
 save_dir_material = save_dir + '/materials'
+save_dir_temp = save_dir + '/temp'
 
 #####---> Windwos Local
 # save_dir = 'c:/tmp'
@@ -38,6 +39,7 @@ save_dir_material = save_dir + '/materials'
 st.session_state['save_dir'] = save_dir
 
 # ディレクトリが存在しない場合は作成
+os.makedirs(save_dir_material, exist_ok=True)
 os.makedirs(save_dir_material, exist_ok=True)
 
 
@@ -244,8 +246,6 @@ with col2:
                     st.error("衣装とマスクの画像サイズが違います。幅と高さが同じサイズの画像を選択してください。")
                     st.session_state['step'] = 0
                     #st.stop()
-
-
 
 with col3:
 
@@ -537,7 +537,7 @@ if st.session_state['step'] == 1:
                     # base64から画像データをデコード
                     image = Image.open(BytesIO(base64.b64decode(img_data)))
                     # ファイルパスの作成
-                    file_path = f"/tmp/{base_filename}{idx}.png"
+                    file_path = f"{save_dir_temp}{base_filename}{idx}.png"
                     # 画像を保存
                     image.save(file_path, format="PNG")
                     image_paths.append(file_path)
@@ -552,7 +552,7 @@ if st.session_state['step'] == 1:
             st.error(f"画像生成に失敗しました。: {response.text}")
             # st.stop()
 
-    st.success("標準画像の生成が完了しました。高解像度化処理を開始します。")
+    #st.success("標準画像の生成が完了しました。高解像度化処理を開始します。")
 
 # 高解像度化処理開始のフラグ
 st.session_state['step'] = 2
@@ -562,6 +562,8 @@ st.session_state['step'] = 2
 ###################################################################
 
 if st.session_state['step'] == 2:
+
+    st.success("標準画像の生成が完了しました。高解像度化処理を開始します。")
     
     for j in range(2):
         # print(f"jの値：{j}")
@@ -673,7 +675,7 @@ if st.session_state['step'] == 2:
 
             # 画像の保存処理
             hires_image_name = f"output_hires{j+1}.png"
-            hires_full_path = os.path.join(save_dir, hires_image_name)
+            hires_full_path = os.path.join(save_dir_temp, hires_image_name)
             
             try:
                 with open(hires_full_path, 'wb') as f:
@@ -710,7 +712,7 @@ if st.session_state['step'] == 3:
         # 顔修正用画像の定義
         adImage= []
 
-        adimgFilename = save_dir + '/output_hires' + str(k+1) + '.png'
+        adimgFilename = save_dir_temp + '/output_hires' + str(k+1) + '.png'
         src_img = Image.open(adimgFilename)
         img_bytes = io.BytesIO()
         src_img.save(img_bytes, format='png')
@@ -879,7 +881,8 @@ def clear_files_in_directory(directory):
                 print(f'Failed to delete {file_path}. Reason: {e}')
 
 # 例として/tmpディレクトリ内のファイルを削除
-clear_files_in_directory(save_dir)
+clear_files_in_directory(save_dir_temp)
+clear_files_in_directory(save_dir_outputs)
 # clear_files_in_directory(save_dir_material)
 
 
