@@ -537,7 +537,7 @@ if st.session_state['step'] == 1:
                     # base64から画像データをデコード
                     image = Image.open(BytesIO(base64.b64decode(img_data)))
                     # ファイルパスの作成
-                    file_path = f"{save_dir_temp}{base_filename}{idx}.png"
+                    file_path = f"{save_dir_temp}/{base_filename}{idx}.png"
                     # 画像を保存
                     image.save(file_path, format="PNG")
                     image_paths.append(file_path)
