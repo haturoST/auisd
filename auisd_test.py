@@ -13,6 +13,9 @@ import shutil
 # Add the project's root directory to the system path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+# 各ステップを実行するためのstep値を初期化
+st.session_state['step'] = 0
+
 ##############################################################
 #   画像の保存先ディレクトリのパスを定義
 ##############################################################
@@ -23,25 +26,67 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # save_dir = save_dir = os.path.join(home_dir, 'tmp')
 
 save_dir = '/tmp'
-save_dir_material = save_dir + '/materials'
+save_dir_materials = save_dir + '/materials'
 save_dir_temp = save_dir + '/temp'
+save_dir_outputs = save_dir + '/outputs'
 
 #####---> Windwos Local
 # save_dir = 'c:/tmp'
-# save_dir_material = save_dir + '/materials'
+# save_dir_materials = save_dir + '/materials'
+# save_dir_temp = save_dir + '/temp'
+# save_dir_outputs = save_dir + '/outputs'
 
 #####---> Mac Local or Linux Local
 # ホームディレクトリを取得してから定義
 # home_dir = os.path.expanduser('~') 
 # save_dir = os.path.join(home_dir, 'tmp')
+# save_dir_materials = os.path.join(home_dir, ',materials')
+# save_dir_temp = os.path.join(home_dir, 'temp')
+# save_dir_outputs = os.path.join(home_dir, 'outputs')
 
 # セッションステートに保存
 st.session_state['save_dir'] = save_dir
+st.session_state['save_dir_materials'] = save_dir_materials
+st.session_state['save_dir_temp'] = save_dir_temp
+st.session_state['save_dir_outputs'] = save_dir_outputs
+
 
 # ディレクトリが存在しない場合は作成
-os.makedirs(save_dir_material, exist_ok=True)
+os.makedirs(save_dir, exist_ok=True)
+os.makedirs(save_dir_materials, exist_ok=True)
 os.makedirs(save_dir_temp, exist_ok=True)
+os.makedirs(save_dir_outputs, exist_ok=True)
 
+
+###################################################################
+#   空のダミー画像を作成
+###################################################################
+
+# 画像ファイルのパスを定義
+output1_path = os.path.join(save_dir_temp, "output1.png")
+output2_path = os.path.join(save_dir_temp, "output2.png")
+hires_output1_path = os.path.join(save_dir_temp, "output_hires1.png")
+hires_output2_path = os.path.join(save_dir_temp, "output_hires2.png")
+
+# 空の画像を作成
+def create_empty_image(file_path):
+
+    # 1x1ピクセルの空の白い画像を作成
+    empty_image = Image.new("RGBA", (1, 1), (255, 255, 255, 0))
+    empty_image.save(file_path)
+
+# アプリ起動時に一度だけ空の画像を作成
+if not os.path.exists(output1_path):
+    create_empty_image(output1_path)
+
+if not os.path.exists(output2_path):
+    create_empty_image(output2_path)
+
+if not os.path.exists(hires_output1_path):
+    create_empty_image(hires_output1_path)
+
+if not os.path.exists(hires_output2_path):
+    create_empty_image(hires_output2_path)
 
 ###################################################################
 #   Session Stateを初期化
@@ -190,7 +235,7 @@ with col1:
             st.session_state['step'] = 0
 
             # 保存するファイルのフルパスを定義
-            img1_path = f"{save_dir_material}/cloth{img1_ext}"
+            img1_path = f"{save_dir_materials}/cloth{img1_ext}"
 
             # 画像を保存
             with open(img1_path, "wb") as f:
@@ -229,7 +274,7 @@ with col2:
             st.session_state['step'] = 0
 
             # 保存するファイルのフルパスを定義
-            img2_path = f"{save_dir_material}/mask{img2_ext}"
+            img2_path = f"{save_dir_materials}/mask{img2_ext}"
 
             # 画像を保存
             with open(img2_path, "wb") as f:
@@ -274,7 +319,7 @@ with col3:
             st.session_state['step'] = 0
 
             # 保存するファイルのフルパスを定義
-            img3_path = f"{save_dir_material}/body{img3_ext}"
+            img3_path = f"{save_dir_materials}/body{img3_ext}"
 
             # 画像を保存
             with open(img3_path, "wb") as f:
@@ -288,8 +333,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 ##### プロンプト選択エリア #######################################################
 
-# プロンプトとネガティブプロンプトを定義
-################################################################################
+# プロンプトとネガティブプロンプトを定義 "##########################################
 
 st.markdown('<p style="font-size:18px;color:#00ffff;">手順3：画像の背景を選択してください。</P>', unsafe_allow_html=True)
 
@@ -301,31 +345,35 @@ myprompt_room = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail },
 myprompt_street = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, street, Hand, detailed, perfect, perfection,>"
 # <lora:hand 4:0.31>"
 
-# 屋外（公園）のプロンプト
+# 屋外（カフェ）のプロンプト
 myprompt_cafe = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, cafe, Hand, detailed, perfect, perfection,>"
 # <lora:hand 4:0.31>"
+
+# 屋外（カフェ）のプロンプト
+myprompt_park = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, park, Hand, detailed, perfect, perfection,>"
 
 # ネガティブプロンプト
 mynegativeprompt00 = "bad hand, bad fingers, clothes, from behind, gloves, arm cover, long sleeves, sandals"
 
-mynegativeprompt = "(worst quality, low quality, illustration, 3d, 2d, painting, cartoons, sketch),bad hands, too many fingers, fused fingers, mutated hands and fingers, malformed hands,extra legs, missing fingers, oorly drawn hands, mutated hands, malformed limbs, missing limb, floating limbs, disconnected limbs, bad feet, long body, bad body ,extra arms, extra limb, pubic hair, text,disfigured, mutated, deformed, long neck, clothes, from behind, gloves, arm cover, long sleeves, sandals,"
+mynegativeprompt = "(worst quality, low quality, illustration, 3d, 2d, painting, cartoons, sketch), from behind, bad hands, too many fingers, fused fingers, mutated hands and fingers, malformed hands,extra legs, missing fingers, oorly drawn hands, mutated hands, malformed limbs, missing limb, floating limbs, disconnected limbs, bad feet, long body, bad body ,extra arms, extra limb, pubic hair, text,disfigured, mutated, deformed, long neck, clothes, gloves, arm cover, long sleeves, sandals,"
 
 ################################################################################
 
 # ラジオボタンを作成
 # プロンプトラジオボタンを定義
 prompt_options = {
-    "背景 1：室内": myprompt_room,
-    "背景 2：屋外（街中）": myprompt_street,
-    "背景 3：屋外（公園）": myprompt_cafe
+    "背景 1：室内（白を基調とした部屋）": myprompt_room,
+    "背景 2：屋内（カフェ）": myprompt_cafe,
+    "背景 3：屋外（街中）": myprompt_street,
+    "背景 4：屋外（公園）": myprompt_park,
 }
 
 # ネガティブプロンプトラジオボタンを定義
-negative_prompt_options = {
-    "Option 1": "No people, no buildings",
-    "Option 2": "No cars, no roads",
-    "Option 3": "No animals, no vegetation"
-}
+# negative_prompt_options = {
+#    "Option 1": "No people, no buildings",
+#    "Option 2": "No cars, no roads",
+#    "Option 3": "No animals, no vegetation"
+# }
 
 # プロンプト選択ラジオボタンを作成
 selected_prompt = st.radio("Choose a prompt", list(prompt_options.keys()))
@@ -381,33 +429,9 @@ with st.container():
 #   img2img Inpaint Upload + Canny で　output.png を生成
 ###################################################################
 
+# st.write(f"img2img Inpaint Upload + Canny で　output.png を生成{st.session_state['step']}")
+
 if st.session_state['step'] == 1:
-
-    # inpaintuoload用画像とContorolnet用画像を定義
-    # cloth_image = []
-    # with open(img1_path, 'rb') as f:
-    #     img_data_cloth = f.read()
-    #     cloth_file = base64.b64encode(f.read()).decode('utf-8')
-    #     cloth_image = [f"data:image/png;base64,{cloth_file}"]
-
-    # mask_image = []
-    # with open(img2_path, 'rb') as f:
-    #     img_data_body = f.read()
-    #     mask_file = base64.b64encode(f.read()).decode('utf-8')
-    #     mask_image = [f"data:image/png;base64,{mask_file}"]
-
-    # body_image = []
-    # with open(img3_path, 'rb') as f:
-    #     img_data = f.read()
-    #     body_file = base64.b64encode(f.read()).decode('utf-8')
-    #     body_image = [f"data:image/png;base64,{body_file}"]
-
-    # Payloadにそれぞれの画像パスを含める
-    # files = {
-    #     "cloth": open(img1_path, "rb"),
-    #     "mask": open(img2_path, "rb"),
-    #     "body": open(img3_path, "rb")
-    # }
 
     with open(img1_path, "rb") as f:
         img1_base64 = base64.b64encode(f.read()).decode('utf-8')
@@ -507,8 +531,15 @@ if st.session_state['step'] == 1:
         }
             
         # APIリクエストを送信
-        st.write("標準画像を生成します。")
-        response = requests.post(api_url+'/sdapi/v1/img2img', json=payload, timeout=1200)
+        if st.session_state['step'] != 1:
+
+            st.error("セッションステートの値が1ではありません。")
+            st.write(st.session_state['step'])
+
+        else:
+            
+            st.write("標準画像を2枚生成します。")
+            response = requests.post(api_url+'/sdapi/v1/img2img', json=payload, timeout=1200)
 
         if response.status_code == 200:
             response_data = response.json()
@@ -530,14 +561,16 @@ if st.session_state['step'] == 1:
                 if len(images_data) > 1:
                     images_data.pop()  # 最後の画像を除外
 
-                # """生成された画像を /tmp に保存し、そのファイルパスを返す"""
+                # """生成された画像を /tmp/temp に保存し、そのファイルパスを返す"""
                 image_paths = []
                 for idx, img_data in enumerate(images_data, start=1):
                     
                     # base64から画像データをデコード
                     image = Image.open(BytesIO(base64.b64decode(img_data)))
+
                     # ファイルパスの作成
-                    file_path = f"/tmp/temp/{base_filename}{idx}.png"
+                    file_path = f"{save_dir_temp}/{base_filename}{idx}.png"
+
                     # 画像を保存
                     image.save(file_path, format="PNG")
                     image_paths.append(file_path)
@@ -550,20 +583,26 @@ if st.session_state['step'] == 1:
             st.error(f"Request failed with status code {response.status_code}")
             #st.error(response.text)
             st.error(f"画像生成に失敗しました。: {response.text}")
-            # st.stop()
+            st.stop()
 
     #st.success("標準画像の生成が完了しました。高解像度化処理を開始します。")
 
-# 高解像度化処理開始のフラグ
-st.session_state['step'] = 2
+    # 高解像度化処理開始のフラグ
+    st.session_state['step'] = 2
+
 
 ###################################################################
 #   img2img + Tile + R-ESRGAN 4x+ で高解像度化
 ###################################################################
 
+# st.write(f"img2img + Tile + R-ESRGAN 4x+ で高解像度化{st.session_state['step']}")
+
 if st.session_state['step'] == 2:
 
     st.success("標準画像の生成が完了しました。高解像度化処理を開始します。")
+
+    # 標準画像の保存場所と高解像度化画像の保存場所を定義
+    st.session_state['save_dir_temp'] = save_dir_temp
     
     for j in range(2):
         # print(f"jの値：{j}")
@@ -660,7 +699,17 @@ if st.session_state['step'] == 2:
                 }
         }
 
-        upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=300)
+        # APIリクエストの送信
+        if st.session_state['step'] != 2:
+
+            st.error(st.session_state['step'])
+            st.error("高解像度化処理を中止しました。セッションステートの値が2ではありません。")
+
+        else:
+            
+            # st.write("高解像度化処理を開始します。")
+            upscale_response = requests.post(api_url+'/sdapi/v1/img2img', json=upscale_payload, timeout=1200)
+            #upscale_response = requests.post(st.session_state['api_url']+'/sdapi/v1/img2img', json=upscale_payload, timeout=300)
 
         if upscale_response.status_code == 200:
         
@@ -671,7 +720,7 @@ if st.session_state['step'] == 2:
             hires_generated_images = hires_result['images']
 
             # 保存先のパス
-            save_dir = st.session_state['save_dir']
+            save_dir = st.session_state['save_dir_temp']
 
             # 画像の保存処理
             hires_image_name = f"output_hires{j+1}.png"
@@ -688,24 +737,30 @@ if st.session_state['step'] == 2:
                 st.stop()
                 
         else:
-            st.error(f"高解像度化に失敗しました。: {upscale_response.text}")
-            st.stop()
+            st.error(f"タイムアウトのため{j+1}枚目の高解像度化に失敗しました。: {upscale_response.text}")
+            # st.stop()
         
         # j += 1
 
-# Adetailer処理開始のフラグ
-st.session_state['step'] = 3 
+    # Adetailer処理開始のフラグ
+    st.session_state['step'] = 3 
 
 
 ###################################################################
 #   ADtetailerで顔を修正して完成画像を保存
 ###################################################################
+
+# st.write(f"ADtetailerで顔を修正して完成画像を保存{st.session_state['step']}")
+
 if st.session_state['step'] == 3:
 
     seq_digit = 5
 
-# 画像の保存パスを定義
-    st.session_state['save_dir'] = save_dir
+    # 高解像度化画像の保存場所を読み込み
+    st.session_state['save_dir_temp'] = save_dir_temp
+
+    # 画像の保存パスを定義
+    st.session_state['save_dir_outputs'] = save_dir_outputs
 
     for k in range(2):
 
@@ -810,12 +865,6 @@ if st.session_state['step'] == 3:
             # 生成した完成画像変数を定義
             last_generated_images = ad_result['images']
 
-            # 完成画像の保存パス
-            save_dir_outputs = '/tmp/outputs'
-
-            # ディレクトリが存在しない場合は作成
-            os.makedirs(save_dir_outputs, exist_ok=True)
-
             # '/tmp/outputs内のファイル数をカウント
             file_count = sum(os.path.isfile(os.path.join(save_dir_outputs, name)) for name in os.listdir(save_dir_outputs))
             
@@ -823,7 +872,7 @@ if st.session_state['step'] == 3:
             renban = f"{file_count + 1 - 1:0{seq_digit}}"
 
             # 完成画像のファイル名
-            ad_image_name = renban + '-compimg.png'
+            ad_image_name = renban + '-compImg.png'
             ad_full_path = os.path.join(save_dir_outputs, ad_image_name)
 
             try:
@@ -831,7 +880,7 @@ if st.session_state['step'] == 3:
                     f.write(base64.b64decode(last_generated_images[0]))
 
                     # 完成画像を表示
-                    st.image(ad_full_path, caption=ad_image_name,  width=300, clamp=True)#use_column_width=True)
+                    st.image(ad_full_path, caption=ad_image_name,  width=500, clamp=True)#use_column_width=True)
 
                     # 完成画像のダウンロードリンクを作成
                     def get_image_download_link(ad_full_path, ad_image_name):
@@ -852,8 +901,8 @@ if st.session_state['step'] == 3:
             st.error(f"Adetailerでの処理に失敗しました。: {adetailer_response.text}")
             st.stop()
 
-# 処理開始フラグをリセット
-st.session_state['step'] = 0
+    # 処理開始フラグをリセット
+    st.session_state['step'] = 0
 
 ###################################################################
 #   既存ファイルの削除
@@ -883,7 +932,7 @@ def clear_files_in_directory(directory):
 # 例として/tmpディレクトリ内のファイルを削除
 clear_files_in_directory(save_dir_temp)
 clear_files_in_directory(save_dir_outputs)
-# clear_files_in_directory(save_dir_material)
+# clear_files_in_directory(save_dir_materials)
 
 
 # 2-4: 2-3で生成した複数の画像をプレビュー
