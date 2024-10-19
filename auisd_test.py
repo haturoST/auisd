@@ -26,16 +26,16 @@ st.session_state['step'] = 0
 # home_dir = os.path.expanduser('~') 
 # save_dir = save_dir = os.path.join(home_dir, 'tmp')
 
-save_dir = '/tmp'
-save_dir_materials = save_dir + '/materials'
-save_dir_temp = save_dir + '/temp'
-save_dir_outputs = save_dir + '/outputs'
-
-#####---> Windwos Local
-# save_dir = 'c:/tmp'
+# save_dir = '/tmp'
 # save_dir_materials = save_dir + '/materials'
 # save_dir_temp = save_dir + '/temp'
 # save_dir_outputs = save_dir + '/outputs'
+
+#####---> Windwos Local
+save_dir = 'c:/tmp'
+save_dir_materials = save_dir + '/materials'
+save_dir_temp = save_dir + '/temp'
+save_dir_outputs = save_dir + '/outputs'
 
 #####---> Mac Local or Linux Local
 # ホームディレクトリを取得してから定義
@@ -93,7 +93,7 @@ os.makedirs(save_dir_outputs, exist_ok=True)
 #   Session Stateを初期化
 ###################################################################
 
-# ボタンの有効・無効状態
+# ボタンの有効・無効状態（現在未使用）
 if 'button_disabled' not in st.session_state:
     st.session_state['button_disabled'] = False
 
@@ -146,6 +146,9 @@ st.markdown(
         font-weight: bold;
         color: #FF5733;
     }
+    .stslider > div > div > div > input[type=range] {
+        accent-color: #FFFF00;
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -172,10 +175,12 @@ footer = """
     </div>
 """
 
-# タイトル・処理説明
+##### タイトル・処理説明 ##################################################
+
 st.title('Aui for SD AUTOMATIC1111')
 st.markdown("<br>", unsafe_allow_html=True)
 st.write('Google Colabで起動したAUTOMATIC1111でAIモデル化画像を2枚生成します。\n\r(1)img2img - Inpaint Upload(Pose Settings))　>　(2)img2img - Inpaint Upload　>　(3)img2img - Upscale　>　(4)img2img - Adetailer(Skip img2img)')
+
 
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -199,11 +204,10 @@ st.session_state['api_url'] = api_url
 st.session_state['step'] = 0
 
 st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
 
 ##### 手順2：画像選択エリア ###############################################
-
-st.markdown("<br>", unsafe_allow_html=True)
 
 # 手順2：衣装画像、マスク画像、マネキン画像、ポーズ画像を選択
 st.markdown('<p style="font-size:18px;color:#00ffff;">手順2：衣装画像、マスク画像、マネキン画像を選択してください。</P>', unsafe_allow_html=True)
@@ -377,8 +381,8 @@ st.markdown("<br>", unsafe_allow_html=True)
 # 髪型ラジオボタンを定義
 hair_prompt_L = " long hair"
 hair_prompt_S = " shoulder length hair"
-hair_prompt_B = " handsome short hair"
-hair_prompt_P = " ponytail"
+hair_prompt_B = " (layered short hair, extra short hair:1.3), undercut, straight hair"  # A-line bob/angled bob/inverted bob/handsome short hair
+hair_prompt_P = " ducktail"  # ducktail/ponytail
 hair_prompt_A = " braid"
 hair_prompt_R = " { long hair | bob cut | ponytail }"
 
@@ -407,8 +411,9 @@ shoes_options = {
 }
 
 # トップス・ボトムスラジオボタンを定義（プロンプトにポーズを入れるか入れないか）
-tops_prompt_P0 = "natural pose"
+tops_prompt_P0 = ", { hand up | arm behind back }" # 腕を上げる / 腕を背後
 tops_prompt_P1 = ""
+tops_prompt_P2 = ", { standing | walking }"
 
 tops_options = {
     "袖あり（半袖を含む）": tops_prompt_P1,
@@ -419,12 +424,12 @@ tops_options = {
 bottoms_options = {
     "パンツ": tops_prompt_P1,
     "ロングスカート": tops_prompt_P1,
-    "丈が短いスカートやパンツ": tops_prompt_P0,
+    "丈が短いスカートやパンツ": tops_prompt_P2,
 }
 
 # 背景ラジオボタンを定義
 room = "indoors, white floor, large room, white background"
-cafe = "cafe"
+cafe = "indoors, cafe"
 street = "street"
 park = "park"
 
@@ -433,6 +438,15 @@ back_options = {
     "背景 2：屋内（カフェ）": cafe,
     "背景 3：屋外（街中）": street,
     "背景 4：屋外（公園）": park,
+}
+
+# へそ出しラジオボタンを定義
+navel = ", navel"
+no_navel = ""
+
+navel_options = {
+    "なし": no_navel,
+    "あり": navel,
 }
 
 # 手順3：髪型・靴を選択
@@ -485,77 +499,75 @@ with col_radio4:
     st.session_state['step'] = 0
 
     # 袖なしトップスと短いボトムスの場合、プロンプトに dynamic pose を追加
-    if tops_options[tops_radio] == tops_prompt_P0 and bottoms_options[bottoms_radio] == tops_prompt_P0:
+    # if tops_options[tops_radio] == tops_prompt_P0 and bottoms_options[bottoms_radio] == tops_prompt_P0:
 
-        pose_prompt = tops_prompt_P0
+    #     pose_prompt = tops_prompt_P0
 
-    else:
+    # else:
 
-        pose_prompt = tops_prompt_P1
+    #     pose_prompt = tops_prompt_P1
 
 
 st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
 
-# 手順5：画像の背景を選択
-st.markdown('<p style="font-size:18px;color:#00ffff;">手順5：画像の背景を選択してください。</P>', unsafe_allow_html=True)
+# 背景・へそ用のカラムを作成
+col_radio5, col_radio6= st.columns([1, 1])
 
-# プロンプト選択ラジオボタンを作成
-back_radio = st.radio("背景の種類", list(back_options.keys()))
-st.session_state['step'] = 0
+with col_radio5:
+    # 手順5：へそ出しを選択
+    st.markdown('<p style="font-size:18px;color:#00ffff;">手順5：へそ出しの衣装ですか？</P>', unsafe_allow_html=True)
+
+    # へそ出し選択ラジオボタンを作成
+    navel_radio = st.radio("へそあり・なし", list(navel_options.keys()))
+    st.session_state['step'] = 0
+
+
+with col_radio6:
+    # 手順6：画像の背景を選択
+    st.markdown('<p style="font-size:18px;color:#00ffff;">手順6：画像の背景を選択してください。</P>', unsafe_allow_html=True)
+
+    # プロンプト選択ラジオボタンを作成
+    back_radio = st.radio("背景の種類", list(back_options.keys()))
+    st.session_state['step'] = 0
 
 
 ##### プロンプトとネガティブプロンプトを定義 #########################
 
 # SD1.5用ベースプロンプト
-myprompt = "best quality, highres, masterpiece, photorealistic, realistic, 1girl, brown hair, " + f"{hair_options[hair_radio]}, { shoes_options[shoes_radio]}" + ", light smile, looking at viewer, collarbone, " + f"{back_options[back_radio]}" + ", brightness, sunlight, bokeh, " + f"{pose_prompt}"
+myprompt = "best quality, highres, masterpiece, photorealistic, realistic, 1girl, beautiful hands, beautiful fingers, brown hair, " + f"{hair_options[hair_radio]}{navel_options[navel_radio]}, { shoes_options[shoes_radio]}" + f"{ tops_options[tops_radio]}{bottoms_options[bottoms_radio]}" + ", light smile, looking at viewer, collarbone, " + f"{back_options[back_radio]}" + ", brightness, daylight, bloom, bokeh,"  # + f"{pose_prompt}"
 
 
 ### 室内のプロンプト
-# SD1.5用
-# myprompt_room = "best quality, highres, masterpiece, photorealistic, realistic, 1girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, light smile, looking at viewer, collarbone, indoors, white floor, large room, white background, soft brightness, sunlight, bokeh,"
-
 # SDXL用
 # myprompt_room = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, indoors, white wall, white ceiling, white floor, white background,"
 # Hand, detailed, perfect, perfection,<lora:hand 4:0.31>"
 
 ### 屋外（街中）のプロンプト
-# SD1.5用
-# myprompt_street = "best quality, highres, masterpiece, photorealistic, realistic, 1girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, light smile, looking at viewer, collarbone, street, city, broad road, soft brightness, sunlight, bokeh,"
-
 # SDXL用
 # myprompt_street = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, street,"
 # Hand, detailed, perfect, perfection,<lora:hand 4:0.31>"
 
 ### 屋外（カフェ）のプロンプト
-# SD1.5用
-# myprompt_cafe = "best quality, highres, masterpiece, photorealistic, realistic, 1girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, light smile, looking at viewer, collarbone, indoors, cafe, soft brightness, sunlight, bokeh,"
-
 # SDXL用
 # myprompt_cafe = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, cafe,"
 # Hand, detailed, perfect, perfection,<lora:hand 4:0.31>"
 
 ### 屋外（公園）のプロンプト
-# SD1.5用
-# myprompt_park = "best quality, highres, masterpiece, photorealistic, realistic, 1girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, light smile, looking at viewer, collarbone, outdoors, park, soft brightness, sunlight, bokeh,"
-
 # SDXL用
 # myprompt_park = "Portrait MagMix Girl, { brown long hair | bob cut | ponytail }, { high heels | shoes }, park,"
 # Hand, detailed, perfect, perfection,<lora:hand 4:0.31>"
 
-# ポーズプロンプト
-# myprompt_pose1 = " dynamic pose,"
-# myprompt_pose2 = ""
-
-# ネガティブプロンプト
-# mynegativeprompt00 = "bad hand, bad fingers, clothes, from behind, gloves, arm cover, long sleeves, sandals"
 
 # SD1.5用ネガティブプロンプト
-mynegativeprompt = "clothes, sandals, (worst_quality:1.5), low quality, lowres, cgi, render, illustration, painting, drawing, (bad-hands-5:1.2), photograph by bad-artist, arm cover, long sleeves, bag, from behind, extra legs, bad feet, extra arms, extra limb, pubic hair, text, disfigured, mutated, deformed, floating hair,"
+mynegativeprompt = "clothes, sandals, worst_quality, low quality, lowres, negative_hand, photograph by bad-artist, cgi, render, illustration, painting, drawing, arm cover, long sleeves, bag, from behind, extra legs, bad feet, extra arms, extra limb, pubic hair, text, disfigured, mutated, deformed, floating hair, bad-hands-5, negative_hand-neg,"
+
+# bad_prompt_version2,
 
 # mynegativeprompt = "clothes, sandals, (worst_quality:2.0), low quality, lowres, cgi, render, illustration, painting, drawing, bad-hands-5, photograph by bad-artist, arm cover, long sleeves, bag, from behind, bad hands, too many fingers, fused fingers, mutated hands and fingers, malformed hands, extra legs, missing fingers, poorly drawn hands, mutated hands, malformed limbs, missing limb, floating limbs, disconnected limbs, bad feet, long body, bad body, extra arms, extra limb, pubic hair, text, disfigured, mutated, deformed, long neck, floating hair,"
 
-# SDXL用
+# SDXL用ネガティブプロンプト
 # mynegativeprompt = "(worst quality, low quality, illustration, 3d, 2d, painting, cartoons, sketch), from behind, bad hands, too many fingers, fused fingers, mutated hands and fingers, malformed hands,extra legs, missing fingers, oorly drawn hands, mutated hands, malformed limbs, missing limb, floating limbs, disconnected limbs, bad feet, long body, bad body ,extra arms, extra limb, pubic hair, text,disfigured, mutated, deformed, long neck, clothes, gloves, arm cover, long sleeves, sandals,"
 
 
@@ -563,17 +575,11 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 
 
-# プロンプト選択結果（payloadに引き渡し）
-#myprompt = prompt_options[selected_prompt] + pose_prompt
-
-# ネガティブプロンプト選択結果
-# chosen_negative_prompt = negative_prompt_options[selected_negative_prompt]
-
-
 ##### Control weight 調整スライダーを作成 ###############################################
 
 # 修正手順：Control weight調整
-st.markdown('<p style="font-size:18px;color:#00ffff;">以下のパラメータ値は、完成画像を参考にして、必要に応じて調整してください。</P>', unsafe_allow_html=True)
+st.markdown('<p style="font-size:18px;color:#ffff00;">以下のパラメータ値は、完成画像を参考にしながら必要に応じて調整してください。</P>', unsafe_allow_html=True)
+st.markdown('<div style="color:#ff0000;font-size:14px;line-height:0;">※全ての画像が微調整可能ではありません。微調整が不可能な画像もあります。</div><br><br>', unsafe_allow_html=True)
 
 # Control weight 調整スライダー用カラムを作成
 col_weight1, col_weight2 = st.columns([1, 1])
@@ -582,28 +588,65 @@ col_weight1, col_weight2 = st.columns([1, 1])
 with col_weight1:
 
     canny_value = st.slider(
-        '衣装デザイン調整（標準値：0.9）',
+        '衣装デザインの微調整（標準値：1.0）',
         min_value=0.0,  # 最小値
-        max_value=1.0,  # 最大値
-        value=0.9,      # デフォルト値
-        step=0.01       # ステップ（刻み）
+        max_value=1.5,  # 最大値
+        value=1.0,      # デフォルト値
+        step=0.05       # ステップ（刻み）
     )
 
-    st.markdown('<p style="font-size:12px;color:#666666;">模様や文字などの細かな衣装デザインを修正します。</P>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:12px;color:#666666;">衣装の模様や文字などの細かなデザインを修正します。数値が大きいほどデザインが反映されますが、破綻率も上がります。</P>', unsafe_allow_html=True)
 
 
 # Opneposeコントロールウエイト調整スライダーを作成
 with col_weight2:
    
     openpose_value = st.slider(
-        'ポージング調整（標準値：0.55）',
+        'ポージングの微調整（標準値：0.7）',
         min_value=0.0,  # 最小値
         max_value=1.0,  # 最大値
-        value=0.55,      # デフォルト値
+        value=0.7,      # デフォルト値
+        step=0.05       # ステップ（刻み）
+    )
+
+    st.markdown('<p style="font-size:12px;color:#666666;">ポーズと手の描画を微調整します。主に足の向きや角度に影響します。腕への影響は、ほぼありません。衣装と人体がズレている場合は、数値を上げます。※大幅なポーズの変更はできません。</P>', unsafe_allow_html=True)
+
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+
+##### Adetailer Control weight 調整スライダーを作成 ###############################################
+
+# Control weight 調整スライダー用カラムを作成
+col_weight3, col_weight4 = st.columns([1, 1])
+
+# Adetailerコントロールウエイト調整スライダーを作成
+with col_weight3:
+
+    adetailer_weight_value = st.slider(
+        '手の描画の微調整①（標準値：0.35）',
+        min_value=0.0,  # 最小値
+        max_value=1.0,  # 最大値
+        value=0.35,      # デフォルト値
         step=0.01       # ステップ（刻み）
     )
 
-    st.markdown('<p style="font-size:12px;color:#666666;">ポーズと手の描画を微調整します。衣装と人体がズレている場合などに調整してください。※大幅なポーズの変更はできません。</P>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:12px;color:#666666;">手の描画に違和感がある場合に調整します。0.3～0.35を目安にしてください。<br>・手の描画面積が広い場合：↓（数値を下げる）<br>・手の描画面積が狭い場合：↑（数値を上げる）</P>', unsafe_allow_html=True)
+
+
+# Adetailer start調整スライダーを作成
+with col_weight4:
+   
+    adetailer_start_value = st.slider(
+        '手の描画の微調整②（標準値：0.05）',
+        min_value=0.0,  # 最小値
+        max_value=1.0,  # 最大値
+        value=0.05,      # デフォルト値
+        step=0.01       # ステップ（刻み）
+    )
+
+    st.markdown('<p style="font-size:12px;color:#666666;">手の描画の微調整①で修正しきれない場合のみ調整します。0～0.1を目安にしてください。</P>', unsafe_allow_html=True)
+
 
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -644,7 +687,7 @@ with st.container():
             st.stop()
 
         else:
-            st.error("画像生成が終了するまで「画像を生成」ボタンを押さないでください！")
+            st.error("画像生成が終了するまで画面スクロール以外の操作をしないでください！")
             st.success(f"{api_url} にリクエストを送信します。")
 
         # ボタンを無効化
@@ -720,7 +763,7 @@ if st.session_state['step'] == 1:
                             "save_detected_map": True,
                             "threshold_a": 100,
                             "threshold_b": 200,
-                            "weight": 0.8  # 0.5
+                            "weight": 1.0  # 0.5
                         }
                     ]
                 },
@@ -932,8 +975,30 @@ if st.session_state['step'] == 2:
                         "threshold_a": 0.5,
                         "threshold_b": 0.5,
                         "union_control_type": "OpenPose",
-                        "weight": openpose_value, #####---> 編集で調整
+                        "weight": openpose_value, #####---> スライダーで調整
                     },
+                ]
+            },
+            "Dynamic Prompts v2.17.1": {
+                "args": [
+                    True,
+                    False,
+                    1,
+                    False,
+                    False,
+                    False,
+                    1.1,
+                    1.5,
+                    100,
+                    0.7,
+                    False,
+                    False,
+                    True,
+                    False,
+                    False,
+                    0,
+                    "Gustavosta/MagicPrompt-Stable-Diffusion",
+                    ""
                 ]
             },
             "Soft Inpainting": {
@@ -1058,13 +1123,13 @@ if st.session_state['step'] == 3:
         upscale_payload = {
             "batch_size": 1,
             "cfg_scale": 1,
-            "denoising_strength": 0.05,
+            "denoising_strength": 0.09,
             "height": height1,
             "init_images": [hiresImage], #--- 高解像度化する画像 output.png を指定
             "n_iter": 1,  # batch count
             "negative_prompt": mynegativeprompt,
             "prompt": myprompt,
-            "sampler_name": "Restart",
+            "sampler_name": "LCM",
             "scheduler": "Automatic", # "Karass",
             "script_args": [
                 "<p style=\"margin-bottom:0.75em\">Will upscale the image by the selected scale factor; use width and height sliders to set tile size</p>",
@@ -1117,17 +1182,39 @@ if st.session_state['step'] == 3:
 
                     ]
                 },
-                "Soft Inpainting": {
-                        "args": [
-                            True,
-                            1,
-                            0.5,
-                            4,
-                            0,
-                            0.5,
-                            2
-                        ] 
-                    }
+                "Dynamic Prompts v2.17.1": {
+                    "args": [
+                        True,
+                        False,
+                        1,
+                        False,
+                        False,
+                        False,
+                        1.1,
+                        1.5,
+                        100,
+                        0.7,
+                        False,
+                        False,
+                        True,
+                        False,
+                        False,
+                        0,
+                        "Gustavosta/MagicPrompt-Stable-Diffusion",
+                        ""
+                    ]
+                },
+                # "Soft Inpainting": {
+                #         "args": [
+                #             True,
+                #             1,
+                #             0.5,
+                #             4,
+                #             0,
+                #             0.5,
+                #             2
+                #         ] 
+                #     }
                 }
         }
 
@@ -1221,15 +1308,16 @@ if st.session_state['step'] == 4:
 
         adetailer_payload = {
             "batch_size": 1,
-            #"cfg_scale": 5,
+            "cfg_scale": 2,
             #"denoising_strength": 0.35,
             "init_images": adImage,
             "n_iter": 1,  # batch count
             "negative_prompt": mynegativeprompt,
             "prompt": myprompt,
-            # "sampler_name": "DPM++ SDE",
-            # "scheduler": "Karass",
+            "sampler_name": "LCM",
+            "scheduler": "Automatic",
             # "seed" : myseed,
+            "steps": 12,
             #"hight": 2066,
             #"width": 1024,
                 "alwayson_scripts": {
@@ -1238,16 +1326,16 @@ if st.session_state['step'] == 4:
                         True,
                         True,
                         {   # 顔の修正
-                            "ad_cfg_scale": 7,
+                            # "ad_cfg_scale": 7,
                             #"ad_checkpoint": "Use same checkpoint",
-                            #"ad_clip_skip": 1,
+                            # "ad_clip_skip": 1,
                             "ad_confidence": 0.3,
                             "ad_controlnet_guidance_end": 1,
                             "ad_controlnet_guidance_start": 0,
                             #"ad_controlnet_model": "None",
                             #"ad_controlnet_module": "None",
                             #"ad_controlnet_weight": 1,
-                            #"ad_denoising_strength": 0.4,
+                            "ad_denoising_strength": 0.4,
                             "ad_dilate_erode": 4,
                             "ad_inpaint_height": 512,
                             "ad_inpaint_only_masked": True,
@@ -1256,18 +1344,18 @@ if st.session_state['step'] == 4:
                             "ad_mask_blur": 4,
                             "ad_mask_k_largest": 0,
                             "ad_mask_max_ratio": 1,
-                            #"ad_mask_merge_invert": "None",
+                            "ad_mask_merge_invert": "None",
                             "ad_mask_min_ratio": 0,
                             "ad_model": "mediapipe_face_full",
                             #"ad_model_classes": "",
-                            #"ad_negative_prompt": "",
+                            "ad_negative_prompt": "",
                             #"ad_noise_multiplier": 1,
-                            #"ad_prompt": "",
-                            #"ad_restore_face": False,
-                            #"ad_sampler": "DPM++ 2M",
-                            #"ad_scheduler": "Use same scheduler",
-                            "ad_steps": 28,
-                            #"ad_tab_enable": True,
+                            "ad_prompt": "",
+                            # "ad_restore_face": False,
+                            # "ad_sampler": "DPM++ 2M",
+                            # "ad_scheduler": "Use same scheduler",
+                            # "ad_steps": 20,
+                            "ad_tab_enable": True,
                             #"ad_use_cfg_scale": False,
                             #"ad_use_checkpoint": False,
                             #"ad_use_clip_skip": False,
@@ -1277,53 +1365,53 @@ if st.session_state['step'] == 4:
                             #"ad_use_steps": False,
                             #"ad_use_vae": False,
                             #"ad_vae": "Use same VAE",
-                            #"ad_x_offset": 0,
-                            #"ad_y_offset": 0,
-                            #"is_api": []
-                        # },
-                        # {   # 手の修正
-                            # "ad_cfg_scale": 7, ###---> 7
+                            "ad_x_offset": 0,
+                            "ad_y_offset": 0,
+                            "is_api": []
+                        },
+                        {   # 手の修正
+                            # "ad_cfg_scale": 2, ###---> 7
                             #"ad_checkpoint": "Use same checkpoint",
                             # "ad_clip_skip": 1,
-                            # "ad_confidence": 0.3,
-                            # "ad_controlnet_guidance_end": 0.88,
-                            # "ad_controlnet_guidance_start": 0,
-                            # "ad_controlnet_model": "control_v11f1p_sd15_depth",
-                            # "ad_controlnet_module": "depth_hand_refiner",
-                            # "ad_controlnet_weight": 0.3, ###---> 1.0
-                            # "ad_denoising_strength": 0.3, ###---> 0.4
-                            # "ad_dilate_erode": 4,
-                            # "ad_inpaint_height": 512,
-                            # "ad_inpaint_only_masked": True,
-                            # "ad_inpaint_only_masked_padding": 16, ###---> 32
-                            # "ad_inpaint_width": 512,
-                            # "ad_mask_blur": 6, ###---> 4
-                            # "ad_mask_k_largest": 0,
-                            # "ad_mask_max_ratio": 1,
-                            #"ad_mask_merge_invert": "None",
-                            # "ad_mask_min_ratio": 0,
-                            # "ad_model": "hand_yolov8n.pt",
-                            #"ad_model_classes": "",
-                            # "ad_negative_prompt": "shoes, footwear",
-                            #"ad_noise_multiplier": 1,
-                            # "ad_prompt": "beautiful hands, beautiful fingers",
-                            #"ad_restore_face": False,
-                            #"ad_sampler": "DPM++ 2M",
-                            #"ad_scheduler": "Use same scheduler",
-                            # "ad_steps": 28,
-                            #"ad_tab_enable": True,
-                            #"ad_use_cfg_scale": False,
-                            #"ad_use_checkpoint": False,
-                            #"ad_use_clip_skip": False,
-                            #"ad_use_inpaint_width_height": False,
-                            #"ad_use_noise_multiplier": False,
-                            #"ad_use_sampler": False,
-                            #"ad_use_steps": False,
-                            #"ad_use_vae": False,
-                            #"ad_vae": "Use same VAE",
-                            #"ad_x_offset": 0,
-                            #"ad_y_offset": 0,
-                            #"is_api": []
+                            "ad_confidence": 0.3,
+                            "ad_controlnet_guidance_end": 1.0,  #0.88,
+                            "ad_controlnet_guidance_start": adetailer_start_value,  #0,
+                            "ad_controlnet_model": "control_v11f1p_sd15_depth",
+                            "ad_controlnet_module": "depth_hand_refiner",
+                            "ad_controlnet_weight": adetailer_weight_value, ###---> 1.0
+                            "ad_denoising_strength": 0.4, ###---> 0.4
+                            "ad_dilate_erode": 4,
+                            "ad_inpaint_height": 512,
+                            "ad_inpaint_only_masked": True,
+                            "ad_inpaint_only_masked_padding": 32, ###---> 32
+                            "ad_inpaint_width": 512,
+                            "ad_mask_blur": 4, ###---> 4
+                            "ad_mask_k_largest": 0,
+                            "ad_mask_max_ratio": 1,
+                            "ad_mask_merge_invert": "None",
+                            "ad_mask_min_ratio": 0,
+                            "ad_model": "hand_yolov8n.pt",
+                            # "ad_model_classes": "",
+                            "ad_negative_prompt": "shoes, footwear",
+                            # "ad_noise_multiplier": 1,
+                            "ad_prompt": "",  # "beautiful hands, beautiful fingers, detailed fingers,",
+                            # "ad_restore_face": False,
+                            # "ad_sampler": "DPM++ SDE",
+                            # "ad_scheduler": "Karass",
+                            # "ad_steps": 12,
+                            "ad_tab_enable": True,
+                            # "ad_use_cfg_scale": False,
+                            # "ad_use_checkpoint": False,
+                            # "ad_use_clip_skip": False,
+                            # "ad_use_inpaint_width_height": False,
+                            # "ad_use_noise_multiplier": False,
+                            # "ad_use_sampler": False,
+                            # "ad_use_steps": False,
+                            # "ad_use_vae": False,
+                            # "ad_vae": "Use same VAE",
+                            "ad_x_offset": 0,
+                            "ad_y_offset": 0,
+                            "is_api": []
                         }
                     ]
                 }
