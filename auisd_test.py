@@ -624,10 +624,10 @@ col_weight3, col_weight4 = st.columns([1, 1])
 with col_weight3:
 
     adetailer_weight_value = st.slider(
-        '手の描画の微調整①（初期値：0.35）',
+        '手の描画の微調整①（初期値：0）',
         min_value=0.0,  # 最小値
         max_value=1.0,  # 最大値
-        value=0.35,      # デフォルト値
+        value=0,      # デフォルト値
         step=0.01       # ステップ（刻み）
     )
 
@@ -638,10 +638,10 @@ with col_weight3:
 with col_weight4:
    
     adetailer_start_value = st.slider(
-        '手の描画の微調整②（初期値：0.05）',
+        '手の描画の微調整②（初期値：0）',
         min_value=0.0,  # 最小値
         max_value=1.0,  # 最大値
-        value=0.05,      # デフォルト値
+        value=0,      # デフォルト値
         step=0.01       # ステップ（刻み）
     )
 
