@@ -23,19 +23,19 @@ st.session_state['step'] = 0
 
 #####---> Streamlit Clour(Linux Server)
 # ホームディレクトリを取得してから定義
-# home_dir = os.path.expanduser('~') 
-# save_dir = save_dir = os.path.join(home_dir, 'tmp')
+home_dir = os.path.expanduser('~') 
+save_dir = save_dir = os.path.join(home_dir, 'tmp')
 
-# save_dir = '/tmp'
-# save_dir_materials = save_dir + '/materials'
-# save_dir_temp = save_dir + '/temp'
-# save_dir_outputs = save_dir + '/outputs'
-
-#####---> Windwos Local
-save_dir = 'c:/tmp'
+save_dir = '/tmp'
 save_dir_materials = save_dir + '/materials'
 save_dir_temp = save_dir + '/temp'
 save_dir_outputs = save_dir + '/outputs'
+
+#####---> Windwos Local
+# save_dir = 'c:/tmp'
+# save_dir_materials = save_dir + '/materials'
+# save_dir_temp = save_dir + '/temp'
+# save_dir_outputs = save_dir + '/outputs'
 
 #####---> Mac Local or Linux Local
 # ホームディレクトリを取得してから定義
