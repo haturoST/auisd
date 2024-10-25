@@ -1394,7 +1394,7 @@ if st.session_state['step'] == 4:
                             # "ad_model_classes": "",
                             "ad_negative_prompt": "shoes, footwear",
                             # "ad_noise_multiplier": 1,
-                            "ad_prompt": "",  # "beautiful hands, beautiful fingers, detailed fingers,",
+                            "ad_prompt": "beautiful hands, beautiful fingers, detailed fingers,",
                             # "ad_restore_face": False,
                             # "ad_sampler": "DPM++ SDE",
                             # "ad_scheduler": "Karass",
