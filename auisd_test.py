@@ -631,7 +631,7 @@ with col_weight3:
         step=0.01       # ステップ（刻み）
     )
 
-    st.markdown('<p style="font-size:12px;color:#666666;">手の描画に違和感がある場合に調整します。0.3～0.35を目安にしてください。<br>・手の描画面積が広い場合：↓（数値を下げる）<br>・手の描画面積が狭い場合：↑（数値を上げる）</P>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:12px;color:#666666;">手の描画に違和感がある場合に調整します。0.15～0.35を目安にしてください。<br>・手の描画面積が広い場合：↓（数値を下げる）<br>・手の描画面積が狭い場合：↑（数値を上げる）</P>', unsafe_allow_html=True)
 
 
 # Adetailer start調整スライダーを作成
@@ -1392,7 +1392,7 @@ if st.session_state['step'] == 4:
                             "ad_mask_min_ratio": 0,
                             "ad_model": "hand_yolov8n.pt",
                             # "ad_model_classes": "",
-                            "ad_negative_prompt": "shoes, footwear",
+                            "ad_negative_prompt": "shoes, footwear, bad-hands-5, negative_hand-neg",
                             # "ad_noise_multiplier": 1,
                             "ad_prompt": "beautiful hands, beautiful fingers, detailed fingers,",
                             # "ad_restore_face": False,
