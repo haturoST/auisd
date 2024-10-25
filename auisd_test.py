@@ -536,7 +536,7 @@ with col_radio6:
 ##### プロンプトとネガティブプロンプトを定義 #########################
 
 # SD1.5用ベースプロンプト
-myprompt = "best quality, highres, masterpiece, photorealistic, realistic, 1girl, beautiful hands, beautiful fingers, brown hair, " + f"{hair_options[hair_radio]}{navel_options[navel_radio]}, { shoes_options[shoes_radio]}" + f"{ tops_options[tops_radio]}{bottoms_options[bottoms_radio]}" + ", light smile, looking at viewer, collarbone, " + f"{back_options[back_radio]}" # + ", brightness, daylight, bloom, bokeh,"  # + f"{pose_prompt}"
+myprompt = "best quality, highres, masterpiece, photorealistic, realistic, 1girl, beautiful hands, beautiful fingers, brown hair, " + f"{hair_options[hair_radio]}{navel_options[navel_radio]}, { shoes_options[shoes_radio]}" + f"{ tops_options[tops_radio]}{bottoms_options[bottoms_radio]}" + ", light smile, looking at viewer, " + f"{back_options[back_radio]}" # + ", collarbone, brightness, daylight, bloom, bokeh,"  # + f"{pose_prompt}"
 
 
 ### 室内のプロンプト
