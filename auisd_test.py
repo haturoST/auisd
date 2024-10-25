@@ -536,7 +536,7 @@ with col_radio6:
 ##### プロンプトとネガティブプロンプトを定義 #########################
 
 # SD1.5用ベースプロンプト
-myprompt = "best quality, highres, masterpiece, photorealistic, realistic, 1girl, beautiful hands, beautiful fingers, brown hair, " + f"{hair_options[hair_radio]}{navel_options[navel_radio]}, { shoes_options[shoes_radio]}" + f"{ tops_options[tops_radio]}{bottoms_options[bottoms_radio]}" + ", light smile, looking at viewer, collarbone, " + f"{back_options[back_radio]}" + ", brightness, daylight, bloom, bokeh,"  # + f"{pose_prompt}"
+myprompt = "best quality, highres, masterpiece, photorealistic, realistic, 1girl, beautiful hands, beautiful fingers, brown hair, " + f"{hair_options[hair_radio]}{navel_options[navel_radio]}, { shoes_options[shoes_radio]}" + f"{ tops_options[tops_radio]}{bottoms_options[bottoms_radio]}" + ", light smile, looking at viewer, collarbone, " + f"{back_options[back_radio]}" # + ", brightness, daylight, bloom, bokeh,"  # + f"{pose_prompt}"
 
 
 ### 室内のプロンプト
@@ -588,7 +588,7 @@ col_weight1, col_weight2 = st.columns([1, 1])
 with col_weight1:
 
     canny_value = st.slider(
-        '衣装デザインの微調整（標準値：1.0）',
+        '衣装デザインの微調整（初期値：1.0）',
         min_value=0.0,  # 最小値
         max_value=1.5,  # 最大値
         value=1.0,      # デフォルト値
@@ -602,7 +602,7 @@ with col_weight1:
 with col_weight2:
    
     openpose_value = st.slider(
-        'ポージングの微調整（標準値：0.7）',
+        'ポージングの微調整（初期値：0.7）',
         min_value=0.0,  # 最小値
         max_value=1.0,  # 最大値
         value=0.7,      # デフォルト値
@@ -624,7 +624,7 @@ col_weight3, col_weight4 = st.columns([1, 1])
 with col_weight3:
 
     adetailer_weight_value = st.slider(
-        '手の描画の微調整①（標準値：0.35）',
+        '手の描画の微調整①（初期値：0.35）',
         min_value=0.0,  # 最小値
         max_value=1.0,  # 最大値
         value=0.35,      # デフォルト値
@@ -638,7 +638,7 @@ with col_weight3:
 with col_weight4:
    
     adetailer_start_value = st.slider(
-        '手の描画の微調整②（標準値：0.05）',
+        '手の描画の微調整②（初期値：0.05）',
         min_value=0.0,  # 最小値
         max_value=1.0,  # 最大値
         value=0.05,      # デフォルト値
