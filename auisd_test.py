@@ -627,7 +627,7 @@ with col_weight3:
         '手の描画の微調整①（初期値：0）',
         min_value=0.0,  # 最小値
         max_value=1.0,  # 最大値
-        value=0,      # デフォルト値
+        value=0.0,      # デフォルト値
         step=0.01       # ステップ（刻み）
     )
 
@@ -641,7 +641,7 @@ with col_weight4:
         '手の描画の微調整②（初期値：0）',
         min_value=0.0,  # 最小値
         max_value=1.0,  # 最大値
-        value=0,      # デフォルト値
+        value=0.0,      # デフォルト値
         step=0.01       # ステップ（刻み）
     )
 
